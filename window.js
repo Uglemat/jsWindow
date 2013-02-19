@@ -52,7 +52,7 @@ $(document).ready( function() {
 			       'left':e.pageX - of.left};
 	    var top_height = window.children(".window-top").height();
 	    var w = Math.max(150,clickoffset.left)
-	    var h = Math.max(0, clickoffset.top - top_height - resisor.height())
+	    var h = Math.max(30, clickoffset.top - top_height - resisor.height())
 
 	    window.css("width",w+5);
 	    window.css("height",h);
