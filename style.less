@@ -25,12 +25,12 @@
     .window-top {
 	cursor: default;
 	p.window-title {
+	    .gradient(rgba(30,87,153,1),rgba(30,87,153,1),rgba(125,185,232,0.85));
+	    .no-user-select
 	    .rounded-top-corners;
+
 	    text-align: center;
 	    padding: 5px 0 5px 0;
-
-	    .gradient(rgba(30,87,153,1),rgba(30,87,153,1),rgba(125,185,232,0.85));
-
 	}
 	.close-window-button {
 	    display: inline;
@@ -63,6 +63,7 @@
 	overflow: auto;
     }
     .resize-window {
+	.no-user-select;
 	display: inline;
 	float: right;
 	position:relative;
