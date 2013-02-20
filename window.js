@@ -1,154 +1,190 @@
-var buildWindow = function (container, id, userSettings) {
-    userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
+var windowGroup = function (container) {
+    var start_z_index = 200;
+    var windows = [];
 
-    defaultSettings = {
-	title: "This is a title!",
-	content: "This is... content",
-	resizable: true,
-	close_button: true,
-	width: 250,
-	height: 400,
-	top: 0,
-	left: 0
-    }
+    this.appendWindow = function(id, userSettings) {
+	var win_group = this;
+	new_zindex = get_largest_zindex() + 1;
+	windows.push({ id: id,
+		       zindex: new_zindex });
+	buildWindow(id, userSettings, new_zindex, win_group);
+    };
 
-    var settings = new Object();
-    for (setting in defaultSettings) {
-	settings[setting] = (userSettings.hasOwnProperty(setting)) ?
-	    userSettings[setting] :
-	    defaultSettings[setting];
-    }
+    this.place_on_top = function (win_id) {	
+	var removed_elem = windows.shift();
 
-    var zindex = 1;
-    var title = "This is the title";
+	for (var zindex=start_z_index; zindex < (start_z_index + windows.length); zindex++) {
+	    var index = (zindex-start_z_index);
+	    $(".jswindow#"+windows[index].id).css("z-index", zindex);
+	};
 
-    ws = "<div class='jswindow' id='"+ id +"' style='z-index:"+zindex+";'>";
-    ws += "<div class='window-top'>";
-    if (settings.close_button) {
-	ws += "<div class='close-window-button'><b>X</b></div>";
-    }
-    ws += "<p class='window-title'>"+ settings.title +"</p>";
-    ws += "</div>";
-    ws += "<div class='window-content-container'>";
-    ws += "<div class='window-content'>";
-    ws += settings.content;
-    ws += "</div></div>";
-    if (settings.resizable) {
-	ws += "<div class='resize-window'><i>/</i></div>";
-    }
-    ws += "</div>";
+	$(".jswindow#"+win_id).css("z-index", zindex);
 
-    container.html(
-	container.html() + "\n\n" + ws
-    );
+	if (windows[windows.length - 2] == windows[windows.length - 1]) {
+	    windows.pop();
+	    windows.unshift(removed_elem);
+	} else {
+	    windows.push({ id: win_id, zindex: zindex });
+	}
+	console.log(windows);
 
-    var win = $(".jswindow#"+ id)
-    var cont_cont = win.children(".window-content-container");
-    var win_top = win.children(".window-top");
-    
-    win.css({
-	"top"   : settings.top,
-	"left"  : settings.left,
-	"width" : settings.width,
-	"height": settings.height
-    });
-    
-    cont_cont.css("height",settings.height - win_top.outerHeight()-16)
-}
+    };
 
-function activate_bindings() {
-    $(document).on( "mouseup.close-window", ".close-window-button", function(e) {
-	var win = $(this).parent().parent();
-	win.css("display","none");
-    });
-    $(document).on( "mousedown", ".jswindow > .window-top", function(e) {
-	var win = $(this).parent();
-	var jswinID = win.attr("id");
+    var get_largest_zindex = function() {
+	return windows.reduce( 
+	    function(prevVal, currentVal, index, array) {
+		return (prevVal.zindex > currentVal.zindex) ? prevVal : currentVal; 
+	    }, { zindex: start_z_index-1 }
+	).zindex;
+    };
 
-	var of = win.offset()
-	var clickoffset = {'top': e.pageY - of.top,
-			   'left':e.pageX - of.left};
-	$(document).on( 'mousemove.move', function(e) {
-	    win.css({"top" : e.pageY - clickoffset.top,
-		     "left": e.pageX - clickoffset.left});
-	});
-	$(document).on( 'mouseup.stop-windowmove', function(e) {
-	    $(this).off('mousemove.move');
-	    $(this).off('mouseup.stop-windowmove');
-	});
-    });
+    var buildWindow = function (win_id, userSettings, zindex, win_group) {
+	userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
 
-    $(document).on( "mousedown", ".jswindow" , function (e) {
-	$(this).css("z-index", String(parseInt($(this).css("z-index")) + 2));
-	var win = $(this);
+	var defaultSettings = {
+	    title: "This is a title!",
+	    content: "This is... content",
+	    resizable: true,
+	    close_button: true,
+	    width: 250,
+	    height: 400,
+	    top: 0,
+	    left: 0
+	};
 
-	$(document).on( "mousemove.debuginfo", function(e) {
+	var settings = new Object();
+	for (setting in defaultSettings) {
+	    settings[setting] = (userSettings.hasOwnProperty(setting)) ?
+		userSettings[setting] :
+		defaultSettings[setting];
+	}
 
-	    var of = win.offset();
-	    var s = "";
-	    s += "<br>e.pageY : " + e.pageY;
-	    s += "<br>e.pageX : " + e.pageX;
-	    s += "<br><br>win.offset().top : " + of.top;
-	    s += "<br>win.offset().left : " + of.left;
+	var ws = "<div class='jswindow' id='"+ win_id +"' style='z-index:"+zindex+";'>";
+	ws += "<div class='window-top'>";
+	if (settings.close_button) {
+	    ws += "<div class='close-window-button'><b>X</b></div>";
+	}
+	ws += "<p class='window-title'>"+ settings.title +"</p>";
+	ws += "</div>";
+	ws += "<div class='window-content-container'>";
+	ws += "<div class='window-content'>";
+	ws += settings.content;
+	ws += "</div></div>";
+	if (settings.resizable) {
+	    ws += "<div class='resize-window'><i>/</i></div>";
+	}
+	ws += "</div>";
 
-	    s += "<br><br>win.outerWidth() : " + win.outerWidth();
-	    s += "<br>win.outerHeight() : " + win.outerHeight();
-	    $("#dbinfo").html(s);
-	});
-    });
+	container.html(
+	    container.html() + "\n\n" + ws
+	);
 
-    $(document).on( "mousedown", ".jswindow .resize-window", function(e) {
-	$("*").addClass("no-user-select")
-	var win = $(this).parent();
+	var win = $(".jswindow#"+ win_id);
 	var cont_cont = win.children(".window-content-container");
 	var win_top = win.children(".window-top");
-	var of = win.offset();
+	
+	win.css({ "top"   : settings.top,
+		  "left"  : settings.left,
+		  "width" : settings.width,
+		  "height": settings.height });
+	
+	cont_cont.css("height",settings.height - win_top.outerHeight()-16);
 
-	var winwidth = win.outerWidth()
-	var winheight = win.outerHeight()
-	var lco = winwidth - (e.pageX - of.left) 
-	var tco = winheight - (e.pageY - of.top)
+	win_group.activate_bindings(win_id, win_group);
+    };
 
-	$(document).on('mousemove.resize', function(e) {
+    this.activate_bindings = function(win_id, win_group) {
+	$(document).on( 
+	    "mouseup.close-window",
+	    ".close-window-button", 
+	    function(e) {
+		var win = $(this).parent().parent();
+		win.css("display","none");
+	    });
+	$(document).on(
+	    "mousedown",
+	    ".jswindow > .window-top", 
+	    function(e) {
+		var win = $(this).parent();
+		var jswinID = win.attr("id");
 
-	    var h = Math.max(100, e.pageY - of.top + tco)
-	    var w = Math.max(150, e.pageX - of.left + lco)
+		var of = win.offset();
+		var clickoffset = {'top': e.pageY - of.top,
+				   'left':e.pageX - of.left};
+		$(document).on(
+		    'mousemove.move', 
+		    function(e) {
+			win.css({"top" : e.pageY - clickoffset.top,
+				 "left": e.pageX - clickoffset.left});
+		    });
 
-	    win.css("width",w);
-	    win.css("height",h);
+		$(document).on( 
+		    'mouseup.stop-windowmove', 
+		    function(e) {
+			$(this).off('mousemove.move');
+			$(this).off('mouseup.stop-windowmove');
+		    });
+	    });
+	$(document).on(
+	    "mousedown",
+	    ".jswindow"+"#"+win_id, 
+	    function (e) {
+		win_group.place_on_top(win_id);
+		//$(this).css("z-index", String(parseInt($(this).css("z-index")) + 1));
+	    });
 
-	    cont_cont.css("height",h-win_top.outerHeight()-16)
-	});
+	$(document).on( 
+	    "mousedown",
+	    ".jswindow .resize-window", 
+	    function(e) {
+		$("*").addClass("no-user-select");
+		var win = $(this).parent();
+		var cont_cont = win.children(".window-content-container");
+		var win_top = win.children(".window-top");
+		var of = win.offset();
+		
+		var winwidth = win.outerWidth();
+		var winheight = win.outerHeight();
+		var lco = winwidth - (e.pageX - of.left);
+		var tco = winheight - (e.pageY - of.top);
 
-	$(document).on("mouseup.stop-resizing", function(e) {
-	    $("*").removeClass("no-user-select")
-	    $(this).off('mousemove.resize');
-	    $(this).off('mouseup.stop-resizing');
-	});
+		$(document).on(
+		    'mousemove.resize', 
+                    function(e) {
+			var h = Math.max(100, e.pageY - of.top + tco);
+			var w = Math.max(150, e.pageX - of.left + lco);
+
+			win.css("width",w);
+			win.css("height",h);
+
+			cont_cont.css("height",h-win_top.outerHeight()-16);
+		    });
+
+		$(document).on(
+		    "mouseup.stop-resizing", 
+		    function(e) {
+			$("*").removeClass("no-user-select");
+			$(this).off('mousemove.resize');
+			$(this).off('mouseup.stop-resizing');
+		    });
+	    });
+    };
+};
+
+$(document).ready( 
+    function () {
+	var wikipedia_iframe = "<p>Your browser does not support iframes.</p>";
+
+	var wg = new windowGroup($("#windows"));
+	wg.appendWindow(2,{title: "2"});
+	wg.appendWindow(3, {title: "3",top: 100, left: 100});
+	wg.appendWindow(1,
+		       { content: wikipedia_iframe,
+			 resizable: false,
+			 height: 300,
+			 width: 800,
+			 title: "<span class='red' style='font-weight:bold'>1</span>",
+			 left: 400,
+			 close_button: false
+		       });
     });
-}
-
-
-$(document).ready( function () {
-    activate_bindings();
-
-    wikipedia_iframe = "\
-<iframe src='https://en.wikipedia.org/wiki/Main_Page'\
-width='100%' height='100%'>\
-<p>Your browser does not support iframes.</p>\
-</iframe>"
-
-    windowsContainer = $("#windows")
-    buildWindow(windowsContainer , 2);
-    buildWindow(windowsContainer , 3);
-
-    buildWindow(windowsContainer , 1, {
-	content: wikipedia_iframe,
-	resizable: false,
-	height: 300,
-	width: 800,
-	title: "<span class='red' style='font-weight:bold'>Wikipedia</span>",
-	left: 400,
-	close_button: false
-    });
-});
