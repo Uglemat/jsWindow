@@ -1,5 +1,4 @@
 @import "resources/elements/elements.less";
-* { margin: 0; padding: 0; }
 
 .no-user-select {
     -webkit-touch-callout: none;
@@ -9,6 +8,7 @@
     -ms-user-select: none;
     user-select: none;
 }
+* { margin: 0; padding: 0;}
 
 @window-border-radius: 15px;
 
@@ -18,15 +18,18 @@
 }
 
 .jswindow {
-    width: 500px;
-    height: 300px;
+    background: rgb(50,50,50);
     position: absolute;
     .rounded-top-corners;
+    width: 200px;
+    height: 200px;
     .window-top {
+	height:0x;
 	cursor: default;
+	word-wrap: break-word;
 	p.window-title {
 	    .gradient(rgba(30,87,153,1),rgba(30,87,153,1),rgba(125,185,232,0.85));
-	    .no-user-select
+	    .no-user-select;
 	    .rounded-top-corners;
 
 	    text-align: center;
@@ -55,24 +58,26 @@
 	    }
 	}
     }
-    .window-content {
-	height: 100%;
-	background: lightgray;
-	border: 10px solid gray;
-	padding: 10px;
+    .window-content-container {
+	background: rgba(255,255,255,0.7);
+	min-height: 20px;
+	border: 1px solid rgba(0,0,0,0.5);
+	padding: 5px;
+	height: 40%;
 	overflow: auto;
+	margin: 2px;
+  }
+    .window-content {
     }
     .resize-window {
-	.no-user-select;
-	display: inline;
 	float: right;
-	position:relative;
-	top: -20px;
-	height: 20px;
-	width: 10px;
-	padding: 0 0 0 3px;
-	border-top-left-radius: 10px;
+	.no-user-select;
+//	display: inline;
+//	padding: 0 0 0 3px;
 	cursor: move;
+	position: relative;
+	bottom: 20px;
+	right: 5px;
     }
 }
 
