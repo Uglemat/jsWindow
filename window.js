@@ -4,30 +4,13 @@ var windowGroup = function (container) {
 
     this.appendWindow = function(id, userSettings) {
 	var win_group = this;
-	new_zindex = get_largest_zindex() + 1;
-	windows.push({ id: id,
-		       zindex: new_zindex });
+	new_zindex =  windows.length + start_z_index ;
+	windows.push(id);
 	buildWindow(id, userSettings, new_zindex, win_group);
     };
 
     this.place_on_top = function (win_id) {	
-	var removed_elem = windows.shift();
-
-	for (var zindex=start_z_index; zindex < (start_z_index + windows.length); zindex++) {
-	    var index = (zindex-start_z_index);
-	    $(".jswindow#"+windows[index].id).css("z-index", zindex);
-	};
-
-	$(".jswindow#"+win_id).css("z-index", zindex);
-
-	if (windows[windows.length - 2] == windows[windows.length - 1]) {
-	    windows.pop();
-	    windows.unshift(removed_elem);
-	} else {
-	    windows.push({ id: win_id, zindex: zindex });
-	}
-	console.log(windows);
-
+	console.log("Omg...");
     };
 
     var get_largest_zindex = function() {
