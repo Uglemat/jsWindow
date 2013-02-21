@@ -1,11 +1,24 @@
 function update_with(defaults , replacements) {
-    replacements = (typeof replacements === 'undefined') ? {} : replacements;
-    for (setting in defaults) {
+    /* Iterate over the properties of "defaults",
+     * and replace the property value with the respective 
+     * "replacements" value if it exists. */
+    for (var setting in defaults) {
         defaults[setting] = (replacements.hasOwnProperty(setting)) ?
             replacements[setting] :
             defaults[setting];
     }
-};
+}
+
+function generate_id(blacklist) {
+    var found_new_id = false;
+    while (!found_new_id) {
+        var new_id = "id" + Math.floor((Math.random() * 10000));
+        if (blacklist.indexOf(new_id) === -1) {
+            found_new_id = true;
+        }
+    }
+    return new_id;
+}
 
 var windowGroup = function (container) {
     var windows = [];
@@ -14,17 +27,15 @@ var windowGroup = function (container) {
         start_z_index: 100
     };
     
-    this.appendWindow = function(id, userSettings) {
+    this.appendWindow = function(userSettings) {
+        userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
+        userSettings.id = (!userSettings.id) ? generate_id(windows) : userSettings.id;
+
         var win_group = this;
-        new_zindex =  windows.length + groupSettings.start_z_index;
-        /*
-         if (!userSettings[id]) {
-         }*/
-        
-        var new_win_id = Math.floor((Math.random()*1000)+1); 
-        
-        windows.push(id);
-        buildWindow(id, userSettings, new_zindex, win_group);
+        var new_zindex =  windows.length + groupSettings.start_z_index;
+
+        windows.push(userSettings.id);
+        buildWindow(userSettings, new_zindex, win_group);
     };
 
     var place_on_top = function (win_id) {
@@ -39,7 +50,7 @@ var windowGroup = function (container) {
         }
     };
 
-    var buildWindow = function (win_id, userSettings, zindex, win_group) {
+    var buildWindow = function (userSettings, zindex, win_group) {
 
         var settings = {
             title: "This is a title!",
@@ -53,7 +64,7 @@ var windowGroup = function (container) {
         };
         update_with(settings, userSettings);
 
-        var ws = "<div class='jswindow' id='"+ win_id +"' style='z-index:"+zindex+";'>";
+        var ws = "<div class='jswindow' id='"+ userSettings.id +"' style='z-index:"+zindex+";'>";
         ws += "<div class='window-top'>";
         if (settings.close_button) {
             ws += "<div class='close-window-button'><b>X</b></div>";
@@ -73,7 +84,7 @@ var windowGroup = function (container) {
             container.html() + "\n\n" + ws
         );
 
-        var win = $(".jswindow#"+ win_id);
+        var win = $(".jswindow#"+ userSettings.id);
         var cont_cont = win.children(".window-content-container");
         var win_top = win.children(".window-top");
         
@@ -84,7 +95,7 @@ var windowGroup = function (container) {
         
         cont_cont.css("height",settings.height - win_top.outerHeight()-16);
 
-        activate_bindings(win_id, win_group);
+        activate_bindings(userSettings.id, win_group);
     };
 
     var activate_bindings = function(win_id, win_group) {
@@ -165,17 +176,15 @@ $(document).ready(
         var wikipedia_iframe = "<p>Your browser does not support iframes.</p>";
 
         var wg = new windowGroup($("#windows"));
-        wg.appendWindow(2,{title: "2"});
-        wg.appendWindow(20);
-        wg.appendWindow(3, {title: "3",top: 300, left: 100, width: 400, height: 200});
-        wg.appendWindow(1,
-                        { content: wikipedia_iframe,
-                          resizable: false,
-                          height: 300,
-                          width: 800,
-                          title: "<span class='red' style='font-weight:bold'>1</span>",
-                          left: 400,
-                          close_button: false
-                        });
-
+        wg.appendWindow();
+        wg.appendWindow();
+        wg.appendWindow({title: "3",top: 300, left: 100, width: 400, height: 200});
+        wg.appendWindow(
+            { id: "idDEDINEFddDedd",
+              content: wikipedia_iframe,
+              height: 300,
+              width: 800,
+              title: "<span class='red' style='font-weight:bold'>1</span>",
+              left: 400,
+              close_button: false });
     });
