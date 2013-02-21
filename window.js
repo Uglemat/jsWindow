@@ -9,16 +9,17 @@ var windowGroup = function (container) {
 	buildWindow(id, userSettings, new_zindex, win_group);
     };
 
-    this.place_on_top = function (win_id) {	
-	console.log("Omg...");
-    };
+    place_on_top = function (win_id) {
+	windows = windows.filter(
+	    function(elem) {
+		return elem != win_id;
+	    });
+	windows.push(win_id);
 
-    var get_largest_zindex = function() {
-	return windows.reduce( 
-	    function(prevVal, currentVal, index, array) {
-		return (prevVal.zindex > currentVal.zindex) ? prevVal : currentVal; 
-	    }, { zindex: start_z_index-1 }
-	).zindex;
+	for (var i = 0; i < (windows.length); i++) {
+	    console.log(i);
+	    $(".jswindow#"+windows[i]).css("z-index", start_z_index + i);
+	}
     };
 
     var buildWindow = function (win_id, userSettings, zindex, win_group) {
@@ -112,8 +113,7 @@ var windowGroup = function (container) {
 	    "mousedown",
 	    ".jswindow"+"#"+win_id, 
 	    function (e) {
-		win_group.place_on_top(win_id);
-		//$(this).css("z-index", String(parseInt($(this).css("z-index")) + 1));
+		place_on_top(win_id);
 	    });
 
 	$(document).on( 
