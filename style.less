@@ -28,60 +28,60 @@
     width: 200px;
     height: 200px;
     .window-top {
-	height:0x;
-	cursor: default;
-	word-wrap: break-word;
-	p.window-title {
-	    .gradient(rgba(30,87,153,1),rgba(30,87,153,1),rgba(125,185,232,0.85));
-	    .no-user-select;
-	    .rounded-top-corners;
+        height:0x;
+        cursor: default;
+        word-wrap: break-word;
+        p.window-title {
+            .gradient(rgba(30,87,153,1),rgba(30,87,153,1),rgba(125,185,232,0.85));
+            .no-user-select;
+            .rounded-top-corners;
 
-	    text-align: center;
-	    padding: 5px 0 5px 0;
-	}
-	.close-window-button {
-	    display: inline;
-	    float: right;
-	    padding: 5px 0 5px 0;
-	    background: lightblue;
-	    width: 35px;
-	    text-align: center;
-	    border-top-right-radius: @window-border-radius @window-border-radius;
-	    border-bottom-left-radius: 10px 15px;
+            text-align: center;
+            padding: 5px 0 5px 0;
+        }
+        .close-window-button {
+            display: inline;
+            float: right;
+            padding: 5px 0 5px 0;
+            background: lightblue;
+            width: 35px;
+            text-align: center;
+            border-top-right-radius: @window-border-radius @window-border-radius;
+            border-bottom-left-radius: 10px 15px;
 
-	    b { 
-		margin-right: 3px; 
-		color: white; 
-	    }
+            b { 
+                margin-right: 3px; 
+                color: white; 
+            }
 
-	    .gradient(#1F1F1F,#1F1F1F,#969696);
+            .gradient(#1F1F1F,#1F1F1F,#969696);
 
-	    &:hover {
-		.gradient(#1F1F1F,lighten(color("#1F1F1F"),10%),lighten(color("#969696"),10%));
-		cursor: pointer;
-	    }
-	}
+            &:hover {
+                .gradient(#1F1F1F,lighten(color("#1F1F1F"),10%),lighten(color("#969696"),10%));
+                cursor: pointer;
+            }
+        }
     }
     .window-content-container {
-	background: rgba(255,255,255,0.7);
-	min-height: 20px;
-	border: 1px solid rgba(0,0,0,0.5);
-	padding: 5px;
-	height: 40%;
-	overflow: auto;
-	margin: 2px;
+        background: rgba(255,255,255,0.7);
+        min-height: 20px;
+        border: 1px solid rgba(0,0,0,0.5);
+        padding: 5px;
+        height: 40%;
+        overflow: auto;
+        margin: 2px;
   }
     .window-content {
-	height: 99%;
+        height: 99%;
     }
     .resize-window {
-	.no-user-select;
-	float: right;
-	cursor: move;
-	position: relative;
-	bottom: 20px;
-	right: 0px;
-	padding: 0 3px 0 6px;
+        .no-user-select;
+        float: right;
+        cursor: move;
+        position: relative;
+        bottom: 20px;
+        right: 0px;
+        padding: 0 3px 0 6px;
     }
 }
 
