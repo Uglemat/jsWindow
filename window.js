@@ -1,10 +1,25 @@
+function update_with(defaults , replacements) {
+    replacements = (typeof replacements === 'undefined') ? {} : replacements;
+    for (setting in defaults) {
+	defaults[setting] = (replacements.hasOwnProperty(setting)) ?
+	    replacements[setting] :
+	    defaults[setting];
+    }
+};
+
 var windowGroup = function (container) {
     var start_z_index = 200;
     var windows = [];
 
     this.appendWindow = function(id, userSettings) {
 	var win_group = this;
-	new_zindex =  windows.length + start_z_index ;
+	new_zindex =  windows.length + start_z_index;
+	/*
+	 if (!userSettings[id]) {
+	 }*/
+
+	new_win_id = Math.floor((Math.random()*1000)+1); 
+
 	windows.push(id);
 	buildWindow(id, userSettings, new_zindex, win_group);
     };
@@ -23,9 +38,8 @@ var windowGroup = function (container) {
     };
 
     var buildWindow = function (win_id, userSettings, zindex, win_group) {
-	userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
 
-	var defaultSettings = {
+	var settings = {
 	    title: "This is a title!",
 	    content: "This is... content",
 	    resizable: true,
@@ -35,13 +49,7 @@ var windowGroup = function (container) {
 	    top: 0,
 	    left: 0
 	};
-
-	var settings = new Object();
-	for (setting in defaultSettings) {
-	    settings[setting] = (userSettings.hasOwnProperty(setting)) ?
-		userSettings[setting] :
-		defaultSettings[setting];
-	}
+	update_with(settings, userSettings);
 
 	var ws = "<div class='jswindow' id='"+ win_id +"' style='z-index:"+zindex+";'>";
 	ws += "<div class='window-top'>";
@@ -160,7 +168,8 @@ $(document).ready(
 
 	var wg = new windowGroup($("#windows"));
 	wg.appendWindow(2,{title: "2"});
-	wg.appendWindow(3, {title: "3",top: 100, left: 100});
+	wg.appendWindow(20);
+	wg.appendWindow(3, {title: "3",top: 300, left: 100, width: 400, height: 200});
 	wg.appendWindow(1,
 		       { content: wikipedia_iframe,
 			 resizable: false,
@@ -170,4 +179,5 @@ $(document).ready(
 			 left: 400,
 			 close_button: false
 		       });
+
     });
