@@ -22,7 +22,8 @@ function generate_id(blacklist) {
 
 var windowGroup = function (container) {
     var windows = [];
-    
+    var window_group = this;
+
     var groupSettings = {
         start_z_index: 100
     };
@@ -36,11 +37,10 @@ var windowGroup = function (container) {
                 "\" . Must match this regular expression: " + String(valid_id);
         }
 
-        var win_group = this;
         var new_zindex =  windows.length + groupSettings.start_z_index;
 
         windows.push(userSettings.id);
-        buildWindow(userSettings, new_zindex, win_group);
+        buildWindow(userSettings, new_zindex);
     };
 
     var place_on_top = function (win_id) {
@@ -55,7 +55,7 @@ var windowGroup = function (container) {
         }
     };
 
-    var buildWindow = function (userSettings, zindex, win_group) {
+    var buildWindow = function (userSettings, zindex) {
         var settings = {
             title: "This is a title!",
             content: "This is... content",
@@ -99,15 +99,16 @@ var windowGroup = function (container) {
         
         cont_cont.css("height",settings.height - win_top.outerHeight()-16);
 
-        activate_bindings(userSettings.id, win_group);
+        activate_bindings(userSettings.id);
     };
 
-    var activate_bindings = function(win_id, win_group) {
+    var activate_bindings = function(win_id) {
         $(document).on(
-            "mouseup.close-window",".close-window-button", 
+            "mouseup.close-window","#" + win_id + " .close-window-button", 
             function(e) {
                 var win = $(this).parent().parent();
-                win.css("display","none");
+                win.remove();
+                windows.splice(windows.indexOf(win_id), 1);
             });
         $(document).on(
             "mousedown", ".jswindow > .window-top", 
