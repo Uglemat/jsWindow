@@ -41,6 +41,7 @@ var windowGroup = function (container) {
 
         windows.push(userSettings.id);
         buildWindow(userSettings, new_zindex);
+        return userSettings.id;
     };
 
     var place_on_top = function (win_id) {
@@ -181,7 +182,7 @@ $(document).ready(
         var wikipedia_iframe = "<p>Your browser does not support iframes.</p>";
 
         var wg = new windowGroup($("#windows"));
-        wg.appendWindow();
+        wg.appendWindow({title: "OH LOLOLALLLLLL"});
         wg.appendWindow();
         wg.appendWindow({title: "3",top: 300, left: 100, width: 400, height: 200});
         wg.appendWindow(
