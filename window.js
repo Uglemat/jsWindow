@@ -30,6 +30,11 @@ var windowGroup = function (container) {
     this.appendWindow = function(userSettings) {
         userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
         userSettings.id = (!userSettings.id) ? generate_id(windows) : userSettings.id;
+        var valid_id = /^[0-9a-zA-Z]+$/;
+        if (!String(userSettings.id).match(valid_id)) {
+            throw "jsWindow - INVALID ID: \"" + userSettings.id + 
+                "\" . Must match this regular expression: " + String(valid_id);
+        }
 
         var win_group = this;
         var new_zindex =  windows.length + groupSettings.start_z_index;
@@ -51,7 +56,6 @@ var windowGroup = function (container) {
     };
 
     var buildWindow = function (userSettings, zindex, win_group) {
-
         var settings = {
             title: "This is a title!",
             content: "This is... content",
@@ -83,7 +87,7 @@ var windowGroup = function (container) {
         container.html(
             container.html() + "\n\n" + ws
         );
-
+        
         var win = $(".jswindow#"+ userSettings.id);
         var cont_cont = win.children(".window-content-container");
         var win_top = win.children(".window-top");
