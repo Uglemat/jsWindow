@@ -2,10 +2,17 @@ function update_with(defaults , replacements) {
     /* Iterate over the properties of "defaults",
      * and replace the property value with the respective 
      * "replacements" value if it exists. */
+    replacements = (typeof replacements === 'undefined') ? {} : replacements;
+
     for (var setting in defaults) {
         defaults[setting] = (replacements.hasOwnProperty(setting)) ?
             replacements[setting] :
             defaults[setting];
+    }
+    for (setting in replacements) {
+        if (!defaults.hasOwnProperty(setting)) {
+            throw "jsWindow - Unknown setting: " + setting;
+        }
     }
 }
 
@@ -20,17 +27,27 @@ function generate_id(blacklist) {
     return new_id;
 }
 
-var windowGroup = function (container) {
+var windowGroup = function (container, additionalGroupSettings) {
     var windows = [];
     var window_group = this;
 
+    var default_keep_windows_on_page_settings = 
+            {top: true, bottom: false, left: false, right: false};
+
     var groupSettings = {
-        start_z_index: 100
+        start_z_index: 100,
+        keep_windows_on_page: {}
     };
-    
+    update_with(groupSettings, additionalGroupSettings);
+    update_with(default_keep_windows_on_page_settings,
+                groupSettings.keep_windows_on_page);
+    groupSettings.keep_windows_on_page = 
+        default_keep_windows_on_page_settings;
+
     this.appendWindow = function(userSettings) {
         userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
         userSettings.id = (!userSettings.id) ? generate_id(windows) : userSettings.id;
+
         var valid_id = /^[0-9a-zA-Z]+$/;
         if (!String(userSettings.id).match(valid_id)) {
             throw "jsWindow - INVALID ID: \"" + userSettings.id + 
@@ -65,7 +82,13 @@ var windowGroup = function (container) {
             width: 250,
             height: 400,
             top: 0,
-            left: 0
+            left: 0,
+            id: 1   /* <- dummy ID, shall never be used. 
+                     * userSettings should always have it's own ID which will replace it.
+                     * update_with assumes the first parameter contains *all* properties,
+                     * if the second parameter contains unique propreties, an exception 
+                     * will be thrown because that shouldn't happen. 
+                     * That's why there's a dummy ID */
         };
         update_with(settings, userSettings);
 
@@ -112,19 +135,40 @@ var windowGroup = function (container) {
                 windows.splice(windows.indexOf(win_id), 1);
             });
         $(document).on(
-            "mousedown", ".jswindow > .window-top", 
+            "mousedown", ".jswindow#" + win_id + " > .window-top", 
             function(e) {
                 var win = $(this).parent();
-                var jswinID = win.attr("id");
 
                 var of = win.offset();
                 var clickoffset = {'top': e.pageY - of.top,
                                    'left':e.pageX - of.left};
+
+                // I create orig_document_height because if I use $(document).outerHeight()
+                // in the callback function, it'll be buggy and won't really work for whatever
+                // reason.
+                var orig_document_height = $(document).outerHeight();
                 $(document).on(
-                    'mousemove.move', 
+                    'mousemove.move',
                     function(e) {
-                        win.css({"top" : e.pageY - clickoffset.top,
-                                 "left": e.pageX - clickoffset.left});
+                        var position = {"top" : e.pageY - clickoffset.top,
+                                        "left": e.pageX - clickoffset.left};
+
+                        // Down below is the logic that keeps windows from leaving the website
+                        if (position.top < 0 && groupSettings.keep_windows_on_page.top) {  // TOP
+                            position.top = 0; }
+                        if (position.left < 0 && groupSettings.keep_windows_on_page.left) { // LEFT
+                            position.left = 0; }
+
+                        if (position.left > $(document).outerWidth()-win.outerWidth() && // RIGHT
+                            groupSettings.keep_windows_on_page.right) { 
+                            position.left = $(document).outerWidth()-win.outerWidth();
+                        }
+
+                        if (position.top > orig_document_height - win.outerHeight() && // BOTTOM
+                            groupSettings.keep_windows_on_page.bottom) { 
+                            position.top = orig_document_height - win.outerHeight();
+                        }
+                        win.css(position);
                     });
 
                 $(document).on( 
@@ -135,13 +179,13 @@ var windowGroup = function (container) {
                     });
             });
         $(document).on(
-            "mousedown", ".jswindow"+"#"+win_id, 
+            "mousedown", ".jswindow#" + win_id, 
             function (e) {
                 place_on_top(win_id);
             });
 
-        $(document).on( 
-            "mousedown", ".jswindow .resize-window", 
+        $(document).on(
+            "mousedown", ".jswindow#" + win_id + " .resize-window", 
             function(e) {
                 $("*").addClass("no-user-select");
                 var win = $(this).parent();
@@ -181,9 +225,10 @@ $(document).ready(
     function () {
         var wikipedia_iframe = "<p>Your browser does not support iframes.</p>";
 
-        var wg = new windowGroup($("#windows"));
+        var wg = new windowGroup($("#windows"), {
+            keep_windows_on_page: {bottom:true, right:true, left:true}
+        });
         wg.appendWindow({title: "OH LOLOLALLLLLL"});
-        wg.appendWindow();
         wg.appendWindow({title: "3",top: 300, left: 100, width: 400, height: 200});
         wg.appendWindow(
             { id: "idDEDINEFddDedd",
