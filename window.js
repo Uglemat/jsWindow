@@ -1,4 +1,16 @@
-function update_with(defaults , replacements) {
+String.prototype.jsWin_format = function(stuff) {
+    var formatted = this;
+    for (var name in stuff) {
+        var regexp = new RegExp('\\{'+ name +'\\}', 'g');
+        formatted = formatted.replace(regexp, stuff[name]);
+    }
+    return formatted;
+};
+
+var jsWindow = {};
+jsWindow.groups = []; // List of group IDs.
+
+jsWindow.update_with = function (defaults , replacements) {
     /* Iterate over the properties of "defaults",
      * and replace the property value with the respective 
      * "replacements" value if it exists. */
@@ -14,45 +26,59 @@ function update_with(defaults , replacements) {
             throw "jsWindow - Unknown setting: " + setting;
         }
     }
-}
+};
 
-function generate_id(blacklist) {
+jsWindow.generate_id = function(blacklist, prefix) {
+    prefix = (typeof prefix === 'undefined') ? "windowID" : prefix;
     var found_new_id = false;
     while (!found_new_id) {
-        var new_id = "id" + Math.floor((Math.random() * 10000));
+        var new_id = prefix + Math.floor((Math.random() * 10000));
         if (blacklist.indexOf(new_id) === -1) {
             found_new_id = true;
         }
     }
     return new_id;
-}
+};
 
-var windowGroup = function (container, additionalGroupSettings) {
+jsWindow.validate_id = function(id) {
+    var valid_id = /^[0-9a-zA-Z]+$/;
+    if (!String(id).match(valid_id)) {
+        throw "jsWindow - INVALID ID: \"" + id + 
+            "\" . Must match this regular expression: " + String(valid_id);
+    }
+};
+
+jsWindow.done_bindings = false;
+jsWindow.windowGroup = function (container, additionalGroupSettings) {
+
     var windows = [];
-    var window_group = this;
-
     var default_keep_windows_on_page_settings = 
             {top: true, bottom: false, left: false, right: false};
 
     var groupSettings = {
         start_z_index: 100,
-        keep_windows_on_page: {}
+        keep_windows_on_page: {},
+        opaque_when_moving: false,
+        opaque_when_resizing: true,
+        id: jsWindow.generate_id(jsWindow.groups, "groupID")
     };
-    update_with(groupSettings, additionalGroupSettings);
-    update_with(default_keep_windows_on_page_settings,
-                groupSettings.keep_windows_on_page);
+    jsWindow.update_with(groupSettings, additionalGroupSettings);
+    jsWindow.validate_id(groupSettings.id);
+
+    jsWindow.update_with(default_keep_windows_on_page_settings,
+                         groupSettings.keep_windows_on_page);
     groupSettings.keep_windows_on_page = 
         default_keep_windows_on_page_settings;
 
+    container.addClass(groupSettings.id);
+
+
+
+
     this.appendWindow = function(userSettings) {
         userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
-        userSettings.id = (!userSettings.id) ? generate_id(windows) : userSettings.id;
-
-        var valid_id = /^[0-9a-zA-Z]+$/;
-        if (!String(userSettings.id).match(valid_id)) {
-            throw "jsWindow - INVALID ID: \"" + userSettings.id + 
-                "\" . Must match this regular expression: " + String(valid_id);
-        }
+        userSettings.id = (!userSettings.id) ? jsWindow.generate_id(windows) : userSettings.id;
+        jsWindow.validate_id(userSettings.id);
 
         var new_zindex =  windows.length + groupSettings.start_z_index;
 
@@ -90,28 +116,38 @@ var windowGroup = function (container, additionalGroupSettings) {
                      * will be thrown because that shouldn't happen. 
                      * That's why there's a dummy ID */
         };
-        update_with(settings, userSettings);
-
-        var ws = "<div class='jswindow' id='"+ userSettings.id +"' style='z-index:"+zindex+";'>";
-        ws += "<div class='window-top'>";
-        if (settings.close_button) {
-            ws += "<div class='close-window-button'><b>X</b></div>";
-        }
-        ws += "<p class='window-title'>"+ settings.title +"</p>";
-        ws += "</div>";
-        ws += "<div class='window-content-container'>";
-        ws += "<div class='window-content'>";
-        ws += settings.content;
-        ws += "</div></div>";
-        if (settings.resizable) {
-            ws += "<div class='resize-window'><i>/</i></div>";
-        }
-        ws += "</div>";
+        jsWindow.update_with(settings, userSettings);
+        
+        var window_html = 
+                (" <div class='jswindow' id='{id}' style='z-index:{zindex};'> " +
+                 "   <div class='window-top'>                                 " +
+                 "     {close_button}                                         " +
+                 "     <p class='window-title'>{title}</p>                    " +
+                 "   </div>                                                   " +
+                 "                                                            " +
+                 "   <div class='window-content-container'>                   " +
+                 "     <div class='window-content'>                           " +
+                 "       {content}                                            " +
+                 "     </div>                                                 " +
+                 "   </div>                                                   " +
+                 "   {resize_thing}                                           " +
+                 " </div>                                                     " )
+                .jsWin_format({
+                    id: userSettings.id,
+                    zindex: zindex,
+                    close_button: (settings.close_button) ? 
+                        "<div class='close-window-button'><b>{X}</b></div>"
+                        .jsWin_format({X:"X"}) : "",
+                    title: settings.title,
+                    resize_thing: (settings.resizable) ?
+                        "<div class='resize-window'><i>/</i></div>" : "",
+                    content: settings.content
+                });
 
         container.html(
-            container.html() + "\n\n" + ws
+            container.html() + "\n\n" + window_html
         );
-        
+
         var win = $(".jswindow#"+ userSettings.id);
         var cont_cont = win.children(".window-content-container");
         var win_top = win.children(".window-top");
@@ -122,111 +158,131 @@ var windowGroup = function (container, additionalGroupSettings) {
                   "height": settings.height });
         
         cont_cont.css("height",settings.height - win_top.outerHeight()-16);
-
-        activate_bindings(userSettings.id);
     };
 
-    var activate_bindings = function(win_id) {
-        $(document).on(
-            "mouseup.close-window","#" + win_id + " .close-window-button", 
-            function(e) {
-                var win = $(this).parent().parent();
-                win.remove();
-                windows.splice(windows.indexOf(win_id), 1);
-            });
-        $(document).on(
-            "mousedown", ".jswindow#" + win_id + " > .window-top", 
-            function(e) {
-                var win = $(this).parent();
 
-                var of = win.offset();
-                var clickoffset = {'top': e.pageY - of.top,
-                                   'left':e.pageX - of.left};
 
-                // I create orig_document_height because if I use $(document).outerHeight()
-                // in the callback function, it'll be buggy and won't really work for whatever
-                // reason.
-                var orig_document_height = $(document).outerHeight();
-                $(document).on(
-                    'mousemove.move',
-                    function(e) {
-                        var position = {"top" : e.pageY - clickoffset.top,
-                                        "left": e.pageX - clickoffset.left};
 
-                        // Down below is the logic that keeps windows from leaving the website
-                        if (position.top < 0 && groupSettings.keep_windows_on_page.top) {  // TOP
-                            position.top = 0; }
-                        if (position.left < 0 && groupSettings.keep_windows_on_page.left) { // LEFT
-                            position.left = 0; }
 
-                        if (position.left > $(document).outerWidth()-win.outerWidth() && // RIGHT
-                            groupSettings.keep_windows_on_page.right) { 
-                            position.left = $(document).outerWidth()-win.outerWidth();
-                        }
 
-                        if (position.top > orig_document_height - win.outerHeight() && // BOTTOM
-                            groupSettings.keep_windows_on_page.bottom) { 
-                            position.top = orig_document_height - win.outerHeight();
-                        }
-                        win.css(position);
-                    });
 
-                $(document).on( 
-                    'mouseup.stop-windowmove', 
-                    function(e) {
-                        $(this).off('mousemove.move');
-                        $(this).off('mouseup.stop-windowmove');
-                    });
-            });
-        $(document).on(
-            "mousedown", ".jswindow#" + win_id, 
-            function (e) {
-                place_on_top(win_id);
-            });
-
-        $(document).on(
-            "mousedown", ".jswindow#" + win_id + " .resize-window", 
-            function(e) {
-                $("*").addClass("no-user-select");
-                var win = $(this).parent();
-                var cont_cont = win.children(".window-content-container");
-                var win_top = win.children(".window-top");
-                var of = win.offset();
-                
-                var winwidth = win.outerWidth();
-                var winheight = win.outerHeight();
-                var lco = winwidth - (e.pageX - of.left);
-                var tco = winheight - (e.pageY - of.top);
-
-                $(document).on(
-                    'mousemove.resize', 
-                    function(e) {
-                        var h = Math.max(100, e.pageY - of.top + tco);
-                        var w = Math.max(150, e.pageX - of.left + lco);
-
-                        win.css("width",w);
-                        win.css("height",h);
-
-                        cont_cont.css("height",h-win_top.outerHeight()-16);
-                    });
-
-                $(document).on(
-                    "mouseup.stop-resizing", 
-                    function(e) {
-                        $("*").removeClass("no-user-select");
-                        $(this).off('mousemove.resize');
-                        $(this).off('mouseup.stop-resizing');
-                    });
-            });
+    function closewin(e) {
+        var win = $(this).parent().parent();
+        windows.splice(windows.indexOf(win.attr('id')), 1);
+        win.remove();
     };
+
+    $(document).on("mouseup.close-window",".{id} .close-window-button"
+                   .jsWin_format({id: groupSettings.id}), closewin);
+    $(document).on(
+        "mousedown", ".{id} .jswindow".jsWin_format({id: groupSettings.id}), 
+        function (e) {
+            place_on_top($(this).attr('id'));
+        });
+    $(document).on(
+        "mousedown", ".{id} .jswindow .resize-window".jsWin_format({id: groupSettings.id}), 
+        function(e) {
+            $(document).off("mouseup.close-window");
+            $("*").addClass("no-user-select");
+            var win = $(this).parent();
+            if (groupSettings.opaque_when_resizing) {
+                win.addClass("opacity");
+            }
+            var cont_cont = win.children(".window-content-container");
+            var win_top = win.children(".window-top");
+            var of = win.offset();
+            
+            var winwidth = win.outerWidth();
+            var winheight = win.outerHeight();
+            var lco = winwidth - (e.pageX - of.left);
+            var tco = winheight - (e.pageY - of.top);
+
+            $(document).on(
+                'mousemove.resize', 
+                function(e) {
+                    var h = Math.max(100, e.pageY - of.top + tco);
+                    var w = Math.max(150, e.pageX - of.left + lco);
+
+                    win.css("width",w);
+                    win.css("height",h);
+
+                    cont_cont.css("height",h-win_top.outerHeight()-16);
+                });
+
+            $(document).on(
+                "mouseup.stop-resizing", 
+                function(e) {
+                    $("*").removeClass("no-user-select");
+                    if (groupSettings.opaque_when_resizing) {
+                        win.removeClass("opacity");
+                    }
+                    $(this).off('mousemove.resize');
+                    $(this).off('mouseup.stop-resizing');
+                    $(document).on("mouseup.close-window",".close-window-button", closewin);
+                });
+        });
+    $(document).on(
+        "mousedown", ".{id} .jswindow .window-top".jsWin_format({id: groupSettings.id}), 
+        function(e) {
+            var win = $(this).parent();
+            if (groupSettings.opaque_when_moving) {
+                win.addClass("opacity");
+            }
+
+            var of = win.offset();
+            var clickoffset = {'top': e.pageY - of.top,
+                               'left':e.pageX - of.left};
+
+            // I create orig_document_height because if I use $(document).outerHeight()
+            // in the callback function, it'll be buggy and won't really work for whatever
+            // reason.
+            var orig_document_height = $(document).outerHeight();
+            $(document).on(
+                'mousemove.move',
+                function(e) {
+                    $(document).off("mouseup.close-window");
+                    var position = {"top" : e.pageY - clickoffset.top,
+                                    "left": e.pageX - clickoffset.left};
+
+                    // Down below is the logic that keeps windows from leaving the website
+                    if (position.top < 0 && groupSettings.keep_windows_on_page.top) {  // TOP
+                        position.top = 0; }
+                    if (position.left < 0 && groupSettings.keep_windows_on_page.left) { // LEFT
+                        position.left = 0; }
+
+                    if (position.left > $(document).outerWidth()-win.outerWidth() && // RIGHT
+                        groupSettings.keep_windows_on_page.right) { 
+                        position.left = $(document).outerWidth()-win.outerWidth();
+                    }
+
+                    if (position.top > orig_document_height - win.outerHeight() && // BOTTOM
+                        groupSettings.keep_windows_on_page.bottom) { 
+                        position.top = orig_document_height - win.outerHeight();
+                    }
+                    win.css(position);
+                });
+
+            $(document).on( 
+                'mouseup.stop-windowmove', 
+                function(e) {
+                    if (groupSettings.opaque_when_moving) {
+                        win.removeClass("opacity");
+                    }
+                    $(this).off('mousemove.move');
+                    $(this).off('mouseup.stop-windowmove');
+                    $(document).on("mouseup.close-window",".close-window-button", closewin);
+                });
+        });
+
 };
 
 $(document).ready( 
     function () {
         var wikipedia_iframe = "<p>Your browser does not support iframes.</p>";
 
-        var wg = new windowGroup($("#windows"), {
-            keep_windows_on_page: {bottom:true, right:true, left:true}
+        var wg = new jsWindow.windowGroup($("#windows"), {
+            keep_windows_on_page: {bottom:true, right:true, left:true},
+            opaque_when_moving: true
         });
         wg.appendWindow({title: "OH LOLOLALLLLLL"});
         wg.appendWindow({title: "3",top: 300, left: 100, width: 400, height: 200});
@@ -237,5 +293,14 @@ $(document).ready(
               width: 800,
               title: "<span class='red' style='font-weight:bold'>1</span>",
               left: 400,
-              close_button: false });
-    });
+              close_button: false,
+              resizable: false });
+ 
+        var awg = new jsWindow.windowGroup($("#some_other_windows"), {
+            keep_windows_on_page: {top:false},
+            start_z_index: 500
+            });
+
+        awg.appendWindow({title:"IMPAOSSSTOR"});
+        awg.appendWindow({title:"AWWWL OLLOl"});
+   });
