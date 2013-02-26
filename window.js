@@ -5,6 +5,9 @@ String.prototype.format = function() {
      *
      * "{3}{2}{1}".format("zero","one","two")"
      * will return this string: "{3}twoone"
+     *
+     * The object has to be the last item, because anything else wouldn't
+     * make so much sense.
      */
 
     var last_index = arguments.length - 1;
@@ -19,8 +22,11 @@ String.prototype.format = function() {
             mappings[arg] = arguments[arg];
         }
     }
-    var replacements = [];
+ 
+    // mappings is now a bunch of key value pairs, such as "0": "text", 
+    // "1": "othertext", "name": "thisisTAXT" and so on
 
+    var replacements = [];
     for (var mapping in mappings) {
         var regex = new RegExp("\\{" + mapping + "\\}", "g");
         var something_left = regex.exec(this);
@@ -33,9 +39,18 @@ String.prototype.format = function() {
             something_left = regex.exec(this);
         }
     }
+
+    // replacements now contains a list of object, each object contains the information 
+    // needed to do the replacements. start is the starting index of the match, in the original
+    // string. length is the length of the part that matched, for example, if this matches: {1}
+    // then length will be 3. replacement is the actual content that shall replace "{1}".
+
     replacements.sort(function(a, b) {
         return a.start > b.start;
     });
+    // We sort the replacements in increasing start index order. We assume it's
+    // impossible that there are any overlaps with the replacements, so we'll do
+    // one replacement at a time and build up the new string from start to end
 
     var finished_string = "";
     var continue_at_index = 0;
@@ -45,7 +60,7 @@ String.prototype.format = function() {
         finished_string += replacements[i].replacement;
         continue_at_index = replacements[i].start + replacements[i].length;
     }
-    
+
     finished_string = finished_string + this.substring(continue_at_index,this.length);
     return finished_string;
 };
