@@ -103,7 +103,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         keep_windows_on_page: {},
         opaque_when_moving: false,
         opaque_when_resizing: true,
-        id: jsWindow.generate_id(jsWindow.groups, "groupID")
+        id: jsWindow.generate_id(jsWindow.groups, "groupID"),
+        theme: "plain"
     };
     jsWindow.update_with(groupSettings, additionalGroupSettings);
     jsWindow.validate_id(groupSettings.id);
@@ -162,7 +163,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         jsWindow.update_with(settings, userSettings);
         
         var window_html = 
-                (" <div class='jswindow' id='{id}' style='z-index:{zindex};'> \n" +
+                (" <div class='jswindow {theme}'                              \n" +
+                 "      id='{id}' style='z-index:{zindex};'>                  \n" +
                  "   <div class='window-top'>                                 \n" +
                  "     {close_button}                                         \n" +
                  "     <p class='window-title'>{title}</p>                    \n" +
@@ -184,7 +186,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                     title: settings.title,
                     resize_thing: (settings.resizable) ?
                         "<div class='resize-window'><i>/</i></div>" : "",
-                    content: settings.content
+                    content: settings.content,
+                    theme: groupSettings.theme
                 });
         container.html(
             container.html() + "\n\n" + window_html
@@ -332,7 +335,8 @@ $(document).ready(function () {
     
     var awg = new jsWindow.windowGroup($("#some_other_windows"), {
         keep_windows_on_page: {top:false},
-        start_z_index: 500
+        start_z_index: 500,
+        theme: "soft-blue"
     });
     
     awg.appendWindow({title:"IMPAOSSSTOR"});
