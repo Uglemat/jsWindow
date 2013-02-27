@@ -255,6 +255,11 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             var winheight = win.outerHeight();
             var lco = winwidth - (e.pageX - of.left);
             var tco = winheight - (e.pageY - of.top);
+            // ^ This is awful. It has something to do with the mouse
+            // cursor, so that when you resize the window, it will remember
+            // where your cursor was when clicking and move the corner relative
+            // to the original cursor position so that the window corner won't
+            // do a sudden "jump".
 
             $(document).on('mousemove.resize', function(e) {
                 var h = Math.max(100, e.pageY - of.top + tco);
@@ -263,6 +268,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 win.css("width",w);
                 win.css("height",h);
                 
+                // The content container is the part below window-top. It's height 
+                // is win_top.outerHeight() less than #jswindow. Plus some fine adjustment.
                 cont_cont.css("height",h-win_top.outerHeight()-16);
             });
 
