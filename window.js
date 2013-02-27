@@ -13,13 +13,13 @@ String.prototype.format = function() {
     var last_index = arguments.length - 1;
     var mappings = {};
 
-    for (var arg in arguments) {
-        if (typeof(arguments[arg]) === 'object' && parseInt(arg) === last_index) {
-            for (var name in arguments[arg]) {
-                mappings[name] =  arguments[arg][name];
+    for (var i in arguments) {
+        if (typeof(arguments[i]) === 'object' && parseInt(i) === last_index) {
+            for (var name in arguments[i]) {
+                mappings[name] =  arguments[i][name];
             }
         } else {
-            mappings[arg] = arguments[arg];
+            mappings[i] = arguments[i];
         }
     }
  
@@ -40,7 +40,7 @@ String.prototype.format = function() {
         }
     }
 
-    // replacements now contains a list of object, each object contains the information 
+    // replacements now contains a list of objects, each object contains the information 
     // needed to do the replacements. start is the starting index of the match, in the original
     // string. length is the length of the part that matched, for example, if this matches: {1}
     // then length will be 3. replacement is the actual content that shall replace "{1}".
@@ -234,11 +234,10 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
 
     $(document).on("mouseup.close-window",".{id} .close-window-button"
                    .format({id: groupSettings.id}), closewin);
-    $(document).on(
-        "mousedown", ".{id} .jswindow".format({id: groupSettings.id}), 
-        function (e) {
-            place_on_top($(this).attr('id'));
-        });
+
+    $(document).on("mousedown", ".{id} .jswindow".format({id: groupSettings.id}),function (e) {
+        place_on_top($(this).attr('id'));
+    });
     $(document).on(
         "mousedown", ".{id} .jswindow .resize-window".format({id: groupSettings.id}), 
         function(e) {
@@ -323,7 +322,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 }
                 $(this).off('mousemove.move');
                 $(this).off('mouseup.stop-windowmove');
-                $(document).on("mouseup.close-window",".close-window-button", closewin);
+                $(document).on("mouseup.close-window",".{id} .close-window-button"
+                               .format({id: groupSettings.id}), closewin);
             });
         });
     
@@ -336,24 +336,26 @@ $(document).ready(function () {
         keep_windows_on_page: {bottom:true, right:true, left:true},
         opaque_when_moving: true
     });
-    wg.appendWindow({title: "OH LOLOLALLLLLL"});
-    wg.appendWindow({title: "3",top: 300, left: 100, width: 400, height: 200});
+    wg.appendWindow({title: "11111111111",id: "1",top:200,left:200});
+    wg.appendWindow({title: "22222222222",id: "2", 
+                     top: 300, left: 100, width: 400, height: 200});
     wg.appendWindow(
-        { id: "idDEDINEFddDedd",
+        { id: "3",
           content: wikipedia_iframe,
           height: 300,
           width: 800,
-          title: "<span>TAST --++ {content}</span> {resize_thing}",
+          title: "333333333333",
           left: 400,
           close_button: false,
           resizable: false });
     
     var awg = new jsWindow.windowGroup($("#some_other_windows"), {
         keep_windows_on_page: {top:false},
+        opaque_when_moving: true,
         start_z_index: 500,
         theme: "soft-blue"
     });
     
-    awg.appendWindow({title:"IMPAOSSSTOR"});
-    awg.appendWindow({title:"AWWWL OLLOl"});
+    awg.appendWindow({title:"IMPAOSSSTOR",top:300});
+//    awg.appendWindow({title:"AWWWL OLLOl"});
 });
