@@ -98,16 +98,20 @@ jsWindow.generate_id = function(blacklist, prefix) {
     return new_id;
 };
 
-jsWindow.validate_id = function(id) {
-    var valid_id = /^[0-9a-zA-Z]+$/;
-    if (!String(id).match(valid_id)) {
-        throw "jsWindow - INVALID ID: \"" + id + 
-            "\" . Must match this regular expression: " + String(valid_id);
+jsWindow.assure_is_alphanumeric = function(stuff, message) {
+    message = (typeof message === 'undefined') ? "Invalid ID" : message;
+    var alphanumeric = /^[0-9a-zA-Z]+$/;
+    if (!String(stuff).match(alphanumeric)) {
+        throw "jsWindow - {message}: '{stuff}'. Must be alphanumeric."
+            .format({ message: message, 
+                      stuff: stuff    });
     }
 };
 
 jsWindow.done_bindings = false;
 jsWindow.windowGroup = function (container, additionalGroupSettings) {
+
+    var windowGroup = this;
 
     var windows = [];
     var default_keep_windows_on_page_settings = 
@@ -122,7 +126,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         theme: "plain"
     };
     jsWindow.update_with(groupSettings, additionalGroupSettings);
-    jsWindow.validate_id(groupSettings.id);
+    jsWindow.assure_is_alphanumeric(groupSettings.id);
 
     jsWindow.update_with(default_keep_windows_on_page_settings,
                          groupSettings.keep_windows_on_page);
@@ -132,12 +136,20 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     container.addClass(groupSettings.id);
 
 
-
+    this.remove_window = function(win_id) {
+        if (windows.indexOf(win_id) === -1) {
+            console.warn("jsWindow - tried to remove non " +
+                         "existent window, unknown ID: {0}".format(win_id));
+        } else {
+            windows.splice(windows.indexOf(win_id), 1);
+            $("#"+ win_id).remove();
+        }
+    };
 
     this.appendWindow = function(userSettings) {
         userSettings = (typeof userSettings === 'undefined') ? {} : userSettings;
         userSettings.id = (!userSettings.id) ? jsWindow.generate_id(windows) : userSettings.id;
-        jsWindow.validate_id(userSettings.id);
+        jsWindow.assure_is_alphanumeric(userSettings.id);
 
         var new_zindex =  windows.length + groupSettings.start_z_index;
 
@@ -168,6 +180,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             height: 400,
             top: 0,
             left: 0,
+            theme: groupSettings.theme,
             id: 1   /* <- dummy ID, shall never be used. 
                      * userSettings should always have it's own ID which will replace it.
                      * update_with assumes the first parameter contains *all* properties,
@@ -176,7 +189,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                      * That's why there's a dummy ID */
         };
         jsWindow.update_with(settings, userSettings);
-        
+        jsWindow.assure_is_alphanumeric(settings.theme, "Invalid theme");
+
         var window_html = 
                 (" <div class='jswindow {theme}'                              \n" +
                  "      id='{id}' style='z-index:{zindex};'>                  \n" +
@@ -202,7 +216,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                     resize_thing: (settings.resizable) ?
                         "<div class='resize-window'><i>/</i></div>" : "",
                     content: settings.content,
-                    theme: groupSettings.theme
+                    theme: settings.theme
                 });
         container.html(
             container.html() + "\n\n" + window_html
@@ -228,13 +242,15 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
 
     function closewin(e) {
         var win = $(this).parent().parent();
-        windows.splice(windows.indexOf(win.attr('id')), 1);
-        win.remove();
+        windowGroup.remove_window(win.attr('id'));
+/*        windows.splice(windows.indexOf(win.attr('id')), 1);
+        win.remove();*/
     };
 
     $(document).on("mouseup.close-window",".{id} .close-window-button"
                    .format({id: groupSettings.id}), closewin);
 
+    
     $(document).on("mousedown", ".{id} .jswindow".format({id: groupSettings.id}),function (e) {
         place_on_top($(this).attr('id'));
     });
@@ -270,6 +286,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 
                 // The content container is the part below window-top. It's height 
                 // is win_top.outerHeight() less than #jswindow. Plus some fine adjustment.
+                // I tried fixing this, without the fine adjustment, but it turned out not
+                // to be so straight forward. This is good enough.
                 cont_cont.css("height",h-win_top.outerHeight()-16);
             });
 
@@ -311,7 +329,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 if (position.left < 0 && groupSettings.keep_windows_on_page.left) { // LEFT
                     position.left = 0; }
                 
-                if (position.left > $(document).outerWidth()-win.outerWidth() && // RIGHT
+                 if (position.left > $(document).outerWidth()-win.outerWidth() && // RIGHT
                     groupSettings.keep_windows_on_page.right) { 
                     position.left = $(document).outerWidth()-win.outerWidth();
                 }
@@ -332,37 +350,5 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 $(document).on("mouseup.close-window",".{id} .close-window-button"
                                .format({id: groupSettings.id}), closewin);
             });
-        });
-    
+        });  
 };
-
-$(document).ready(function () {
-    var wikipedia_iframe = "Your browser {content} does not support {title} iframes.";
-    
-    var wg = new jsWindow.windowGroup($("#windows"), {
-        keep_windows_on_page: {bottom:true, right:true, left:true},
-        opaque_when_moving: true
-    });
-    wg.appendWindow({title: "11111111111",id: "1",top:200,left:200});
-    wg.appendWindow({title: "22222222222",id: "2", 
-                     top: 300, left: 100, width: 400, height: 200});
-    wg.appendWindow(
-        { id: "3",
-          content: wikipedia_iframe,
-          height: 300,
-          width: 800,
-          title: "333333333333",
-          left: 400,
-          close_button: false,
-          resizable: false });
-    
-    var awg = new jsWindow.windowGroup($("#some_other_windows"), {
-        keep_windows_on_page: {top:false},
-        opaque_when_moving: true,
-        start_z_index: 500,
-        theme: "soft-blue"
-    });
-    
-    awg.appendWindow({title:"IMPAOSSSTOR",top:300});
-//    awg.appendWindow({title:"AWWWL OLLOl"});
-});
