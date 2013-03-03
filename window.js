@@ -1,4 +1,5 @@
-String.prototype.format = function() {
+String.prototype.format = function () {
+    "use strict";
     /* String formatting. Example:
      * "{0}{hall}{0}{1}".format(55555, {hall: "{omg}{omg}", omg: "{hall}"});
      * will return this string: "55555{omg}{omg}55555{1}".
@@ -13,13 +14,13 @@ String.prototype.format = function() {
     var last_index = arguments.length - 1;
     var mappings = {};
 
-    for (var i in arguments) {
-        if (typeof(arguments[i]) === 'object' && parseInt(i) === last_index) {
-            for (var name in arguments[i]) {
-                mappings[name] =  arguments[i][name];
+    for (var index in arguments) {
+        if (typeof arguments[index] === 'object' && parseInt(index, 10) === last_index) {
+            for (var name in arguments[index]) {
+                mappings[name] =  arguments[index][name];
             }
         } else {
-            mappings[i] = arguments[i];
+            mappings[index] = arguments[index];
         }
     }
  
@@ -69,6 +70,7 @@ var jsWindow = {};
 jsWindow.groups = []; // List of group IDs.
 
 jsWindow.update_with = function (defaults , replacements) {
+    "use strict";
     /* Iterate over the properties of "defaults",
      * and replace the property value with the respective 
      * "replacements" value if it exists. */
@@ -87,6 +89,7 @@ jsWindow.update_with = function (defaults , replacements) {
 };
 
 jsWindow.generate_id = function(blacklist, prefix) {
+    "use strict";
     prefix = (typeof prefix === 'undefined') ? "windowID" : prefix;
     var found_new_id = false;
     while (!found_new_id) {
@@ -99,18 +102,19 @@ jsWindow.generate_id = function(blacklist, prefix) {
 };
 
 jsWindow.assure_is_alphanumeric = function(stuff, message) {
+    "use strict";
     message = (typeof message === 'undefined') ? "Invalid ID" : message;
     var alphanumeric = /^[0-9a-zA-Z]+$/;
     if (!String(stuff).match(alphanumeric)) {
-        throw "jsWindow - {message}: '{stuff}'. Must be alphanumeric."
-            .format({ message: message, 
-                      stuff: stuff    });
+        throw "jsWindow - {message}: '{stuff}'. Must be alphanumeric.".format(
+            { message: message, stuff: stuff
+            });
     }
 };
 
 jsWindow.done_bindings = false;
 jsWindow.windowGroup = function (container, additionalGroupSettings) {
-
+    "use strict";
     var windowGroup = this;
 
     var windows = [];
@@ -205,22 +209,21 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                  "     </div>                                                 \n" +
                  "   </div>                                                   \n" +
                  "   {resize_thing}                                           \n" +
-                 " </div>                                                     \n" )
-                .format({
-                    id: userSettings.id,
-                    zindex: zindex,
-                    close_button: (settings.close_button) ? 
-                        "<div class='close-window-button'><b>{X}</b></div>"
-                        .format({X:"X"}) : "",
-                    title: settings.title,
-                    resize_thing: (settings.resizable) ?
-                        "<div class='resize-window'>⌟</div>" : "",
-                    content: settings.content,
-                    theme: settings.theme
-                });
-        container.html(
-            container.html() + "\n\n" + window_html
-        );
+                 " </div>                                                     \n" ).format(
+                     {
+                         id: userSettings.id,
+                         zindex: zindex,
+                         close_button: (settings.close_button) ? 
+                             "<div class='close-window-button'><b>{X}</b></div>".format(
+                                 {X:"X"}) : "",
+                         title: settings.title,
+                         resize_thing: (settings.resizable) ?
+                             "<div class='resize-window'>⌟</div>" : "",
+                         content: settings.content,
+                         theme: settings.theme
+                     });
+
+        container.html(container.html() + "\n\n" + window_html);
 
         var win = $(".jswindow#"+ userSettings.id);
         var cont_cont = win.children(".window-content-container");
@@ -242,12 +245,11 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
 
     function closewin(e) {
         var win = $(this).parent().parent();
-        console.log(win.attr('id'));
         windowGroup.remove_window(win.attr('id'));
-    };
+    }
 
-    $(document).on("mouseup.close-window",".{id} .close-window-button"
-                   .format({id: groupSettings.id}), closewin);
+    $(document).on("mouseup.close-window",".{id} .close-window-button".format(
+        {id: groupSettings.id}), closewin);
 
     
     $(document).on("mousedown", ".{id} .jswindow".format({id: groupSettings.id}),
@@ -257,8 +259,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     $(document).on(
         "mousedown", ".{id} .jswindow .resize-window".format({id: groupSettings.id}), 
         function(e) {
-            $(document).off("mouseup.close-window",".{id} .close-window-button"
-                            .format({id: groupSettings.id}));
+            $(document).off("mouseup.close-window",".{id} .close-window-button".format(
+                {id: groupSettings.id}));
 
             $("*").addClass("no-user-select");
             var win = $(this).parent();
@@ -300,13 +302,13 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 }
                 $(this).off('mousemove.resize');
                 $(this).off('mouseup.stop-resizing');
-                $(document).on("mouseup.close-window",".{id} .close-window-button"
-                               .format({id: groupSettings.id}), closewin);
+                $(document).on("mouseup.close-window",".{id} .close-window-button".format(
+                    {id: groupSettings.id}), closewin);
             });
         });
     $(document).on(
-        "mousedown", ".{id} .jswindow .window-top p.window-title"
-            .format({id: groupSettings.id}), 
+        "mousedown", ".{id} .jswindow .window-top p.window-title".format(
+            {id: groupSettings.id}), 
         function(e) {
             var win = $(this).parent().parent();
             if (groupSettings.opaque_when_moving) {
@@ -322,8 +324,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             // reason.
             var orig_document_height = $(document).outerHeight();
             $(document).on('mousemove.move', function(e) {
-                $(document).off("mouseup.close-window",".{id} .close-window-button"
-                                .format({id: groupSettings.id}));
+                $(document).off("mouseup.close-window",".{id} .close-window-button".format(
+                    {id: groupSettings.id}));
 
                 var position = {"top" : e.pageY - clickoffset.top,
                                 "left": e.pageX - clickoffset.left};
@@ -352,8 +354,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 }
                 $(this).off('mousemove.move');
                 $(this).off('mouseup.stop-windowmove');
-                $(document).on("mouseup.close-window",".{id} .close-window-button"
-                               .format({id: groupSettings.id}), closewin);
+                $(document).on("mouseup.close-window",".{id} .close-window-button".format(
+                    {id: groupSettings.id}), closewin);
             });
         });  
 };
