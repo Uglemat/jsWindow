@@ -242,6 +242,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
 
     function closewin(e) {
         var win = $(this).parent().parent();
+        console.log(win.attr('id'));
         windowGroup.remove_window(win.attr('id'));
     };
 
@@ -249,13 +250,16 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                    .format({id: groupSettings.id}), closewin);
 
     
-    $(document).on("mousedown", ".{id} .jswindow".format({id: groupSettings.id}),function (e) {
-        place_on_top($(this).attr('id'));
-    });
+    $(document).on("mousedown", ".{id} .jswindow".format({id: groupSettings.id}),
+                   function (e) {
+                       place_on_top($(this).attr('id'));
+                   });
     $(document).on(
         "mousedown", ".{id} .jswindow .resize-window".format({id: groupSettings.id}), 
         function(e) {
-            $(document).off("mouseup.close-window");
+            $(document).off("mouseup.close-window",".{id} .close-window-button"
+                            .format({id: groupSettings.id}));
+
             $("*").addClass("no-user-select");
             var win = $(this).parent();
             if (groupSettings.opaque_when_resizing) {
@@ -301,7 +305,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             });
         });
     $(document).on(
-        "mousedown", ".{id} .jswindow .window-top p.window-title".format({id: groupSettings.id}), 
+        "mousedown", ".{id} .jswindow .window-top p.window-title"
+            .format({id: groupSettings.id}), 
         function(e) {
             var win = $(this).parent().parent();
             if (groupSettings.opaque_when_moving) {
@@ -317,7 +322,9 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             // reason.
             var orig_document_height = $(document).outerHeight();
             $(document).on('mousemove.move', function(e) {
-                $(document).off("mouseup.close-window");
+                $(document).off("mouseup.close-window",".{id} .close-window-button"
+                                .format({id: groupSettings.id}));
+
                 var position = {"top" : e.pageY - clickoffset.top,
                                 "left": e.pageX - clickoffset.left};
                 
