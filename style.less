@@ -4,6 +4,12 @@
     .opacity(0.8);
 }
 
+.shadow {
+  -moz-box-shadow:    0 0 4px 1px #777;
+  -webkit-box-shadow: 0 0 4px 1px #777;
+  box-shadow:         0 0 4px 1px #777;
+}
+
 .no-user-select {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -131,6 +137,7 @@ body {
 
 
 .jswindow.gnome3 {
+    .shadow;
     background: #e4e3e2;
     .rounded-top-corners;
     .window-top {
@@ -175,8 +182,8 @@ body {
     }
     .window-content {}
     .resize-window {
-        bottom: 22px;
-        right: 1px;
+        bottom: 19px;
+        right: -1px;
     }
 }
 

@@ -15,7 +15,7 @@ $(document).ready(function () {
                      top: 300, left: 100, width: 400, height: 200});
     var wpID = wg.appendWindow(
         { id: "3",
-          theme: "gnome3",
+          theme: "softblue",
           content: wikipedia_iframe + "<input type=button id=close value='Close window'>",
           height: 400,
           width: 500,
