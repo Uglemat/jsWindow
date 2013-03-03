@@ -127,7 +127,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         opaque_when_moving: false,
         opaque_when_resizing: true,
         id: jsWindow.generate_id(jsWindow.groups, "groupID"),
-        theme: "plain"
+        theme: "plain",
+        shadow: false
     };
     jsWindow.update_with(groupSettings, additionalGroupSettings);
     jsWindow.assure_is_alphanumeric(groupSettings.id);
@@ -185,6 +186,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             top: 0,
             left: 0,
             theme: groupSettings.theme,
+            shadow: groupSettings.shadow,
             id: 1   /* <- dummy ID, shall never be used. 
                      * userSettings should always have it's own ID which will replace it.
                      * update_with assumes the first parameter contains *all* properties,
@@ -196,7 +198,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         jsWindow.assure_is_alphanumeric(settings.theme, "Invalid theme");
 
         var window_html = 
-                (" <div class='jswindow {theme}'                              \n" +
+                (" <div class='jswindow {theme} {shadow}'                     \n" +
                  "      id='{id}' style='z-index:{zindex};'>                  \n" +
                  "   <div class='window-top'>                                 \n" +
                  "     {close_button}                                         \n" +
@@ -220,7 +222,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                          resize_thing: (settings.resizable) ?
                              "<div class='resize-window'>⌟</div>" : "",
                          content: settings.content,
-                         theme: settings.theme
+                         theme: settings.theme,
+                         shadow: (settings.shadow) ? "shadow" : ""
                      });
 
         container.html(container.html() + "\n\n" + window_html);
