@@ -214,7 +214,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                         .format({X:"X"}) : "",
                     title: settings.title,
                     resize_thing: (settings.resizable) ?
-                        "<div class='resize-window'><i>/</i></div>" : "",
+                        "<div class='resize-window'>⌟</div>" : "",
                     content: settings.content,
                     theme: settings.theme
                 });
@@ -243,8 +243,6 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     function closewin(e) {
         var win = $(this).parent().parent();
         windowGroup.remove_window(win.attr('id'));
-/*        windows.splice(windows.indexOf(win.attr('id')), 1);
-        win.remove();*/
     };
 
     $(document).on("mouseup.close-window",".{id} .close-window-button"

@@ -21,7 +21,7 @@ $(document).ready(function () {
           title: "333333333333",
           left: 400,
           close_button: false,
-          resizable: true });
+          resizable: false });
     
 
     $("#close").click(function() {
