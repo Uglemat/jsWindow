@@ -301,9 +301,9 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             });
         });
     $(document).on(
-        "mousedown", ".{id} .jswindow .window-top".format({id: groupSettings.id}), 
+        "mousedown", ".{id} .jswindow .window-top p.window-title".format({id: groupSettings.id}), 
         function(e) {
-            var win = $(this).parent();
+            var win = $(this).parent().parent();
             if (groupSettings.opaque_when_moving) {
                 win.addClass("opacity");
             }
