@@ -22,12 +22,6 @@
     -ms-user-select: none;
     user-select: none;
 }
-* { margin: 0; padding: 0;}
-
-body {
-    height: 300px;
-    background: olive;
-}
 
 @window-border-radius: 15px;
 
@@ -38,6 +32,18 @@ body {
 .rounded-bottom-corners(@radius: @window-border-radius) {
     border-bottom-left-radius: @radius @radius;
     border-bottom-right-radius: @radius @radius;
+}
+
+.jswindow,
+.jswindow .window-top,
+.jswindow .window-top p,
+.jswindow .window-top .close_window_button,
+.jswindow .window-top .close_window_button b,
+.jswindow .window-content-container,
+.jswindow .window-content-container .window-content, 
+.jswindow .resize-window { 
+    margin: 0;
+    padding: 0;
 }
 
 .jswindow {
