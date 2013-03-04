@@ -56,6 +56,7 @@ body {
             padding: 5px 0 5px 0;
             width: 35px;
             text-align: center;
+
             b { 
                 margin-right: 3px; 
                 color: white; 
@@ -63,6 +64,13 @@ body {
 
             &:hover {
                 cursor: pointer;
+            }
+
+            &:active {
+                b { 
+                    position: relative;
+                    top: 1px;
+                }
             }
         }
     }
@@ -101,6 +109,9 @@ body {
             &:hover {
                 background: #800;
             }
+            &:active {
+                background: lighten(#800, -10%);
+            }
         }
     }
     .window-content-container {
@@ -125,6 +136,9 @@ body {
             b {}
             &:hover {
                 .gradient(#1F1F1F,lighten(color("#1F1F1F"),10%),lighten(color("#969696"),10%));
+            }
+            &:active {
+                .gradient(#1F1F1F,lighten(color("#2F2F2F"), 10%),lighten(color("#1F1F1F"),10%));
             }
         }
     }
@@ -297,7 +311,7 @@ body {
             b {
                 font-size: .5em;
                 position: relative;
-                bottom: 4px;
+                top: -4px;
                 left: 1px;
             }
             &:hover {
@@ -323,6 +337,12 @@ body {
                     rgba(229,146,29,1) 100%);
                 filter: progid:DXImageTransform.Microsoft.gradient( 
                     startColorstr='#d86f1e', endColorstr='#e5921d',GradientType=0 );
+            }
+            &:active {
+                b {
+                    position: relative;
+                    top: -3px;
+                }
             }
         }
     }
