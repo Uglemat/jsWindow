@@ -4,10 +4,14 @@
     .opacity(0.8);
 }
 
+.set_shadow(@color: #333, @width: 1px, @blur: 9px) {
+  -moz-box-shadow:    0 0 @blur @width @color;
+  -webkit-box-shadow: 0 0 @blur @width @color;
+  box-shadow:         0 0 @blur @width @color;
+}
+
 .shadow {
-  -moz-box-shadow:    0 0 9px 1px #333;
-  -webkit-box-shadow: 0 0 9px 1px #333;
-  box-shadow:         0 0 9px 1px #333;
+    .set_shadow;
 }
 
 .no-user-select {
@@ -312,6 +316,10 @@ body {
                 left: 1px;
             }
             &:hover {
+                .set_shadow(#F20028, 1px, 6px);
+                outline: none; // Has to remove the outline, or else the outline will appear outside
+                // of the shadow in firefox
+
                 background: rgb(216,111,30);
                 background: -moz-linear-gradient(
                     top,  rgba(216,111,30,1) 0%, rgba(194,109,62,1) 50%, rgba(204,64,42,1) 51%, 
@@ -336,6 +344,9 @@ body {
                     startColorstr='#d86f1e', endColorstr='#e5921d',GradientType=0 );
             }
             &:active {
+                .set_shadow(#915107, 2px, 6px);
+                outline: none;
+
                 b {
                     position: relative;
                     top: -3px;
