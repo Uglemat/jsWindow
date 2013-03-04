@@ -116,6 +116,7 @@ jsWindow.done_bindings = false;
 jsWindow.windowGroup = function (container, additionalGroupSettings) {
     "use strict";
     var windowGroup = this;
+    var windowSettings = {};
 
     var windows = [];
     var default_keep_windows_on_page_settings = 
@@ -128,7 +129,9 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         opaque_when_resizing: true,
         id: jsWindow.generate_id(jsWindow.groups, "groupID"),
         theme: "plain",
-        shadow: false
+        shadow: false,
+        min_height: 100,
+        min_width: 150
     };
     jsWindow.update_with(groupSettings, additionalGroupSettings);
     jsWindow.assure_is_alphanumeric(groupSettings.id);
@@ -185,17 +188,21 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             height: 400,
             top: 0,
             left: 0,
+            min_height: groupSettings.min_height,
+            min_width: groupSettings.min_width,
             theme: groupSettings.theme,
             shadow: groupSettings.shadow,
-            id: 1   /* <- dummy ID, shall never be used. 
-                     * userSettings should always have it's own ID which will replace it.
-                     * update_with assumes the first parameter contains *all* properties,
-                     * if the second parameter contains unique propreties, an exception 
-                     * will be thrown because that shouldn't happen. 
-                     * That's why there's a dummy ID */
+            id: "1"  /* <- dummy ID, shall never be used. 
+                      * userSettings should always have it's own ID which will replace it.
+                      * update_with assumes the first parameter contains *all* properties,
+                      * if the second parameter contains unique propreties, an exception 
+                      * will be thrown because that shouldn't happen. 
+                      * That's why there's a dummy ID */
         };
         jsWindow.update_with(settings, userSettings);
         jsWindow.assure_is_alphanumeric(settings.theme, "Invalid theme");
+
+        windowSettings[settings.id] = settings;
 
         var window_html = 
                 (" <div class='jswindow {theme} {shadow}'                     \n" +
@@ -267,6 +274,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
 
             $("*").addClass("no-user-select");
             var win = $(this).parent();
+            var win_id = win.attr('id');
             if (groupSettings.opaque_when_resizing) {
                 win.addClass("opacity");
             }
@@ -285,8 +293,10 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             // do a sudden "jump".
 
             $(document).on('mousemove.resize', function(e) {
-                var h = Math.max(100, e.pageY - of.top + tco);
-                var w = Math.max(150, e.pageX - of.left + lco);
+                var h = Math.max(windowSettings[win_id]['min_height'], 
+                                 e.pageY - of.top + tco);
+                var w = Math.max(windowSettings[win_id]['min_width'], 
+                                 e.pageX - of.left + lco);
                 
                 win.css("width",w);
                 win.css("height",h);
