@@ -30,6 +30,8 @@ $(document).ready( function() {
         height: 255, width: 250,
         content: "I don't have a resize thing in the bottom-right corner, because the `resizable` option is set to false"
     });
+
+
     var window_ID = wingroup.appendWindow({
         title: '<b style="color: darkred">No close button</b>',
         theme: 'softblue', 
@@ -37,14 +39,8 @@ $(document).ready( function() {
         close_button: false,
         top: 285, left: 560, 
         width: 250, height: 200,
-        content: "This window doesn't have a close button. Or wait, actually, it does: \
-            <input id='closeme' type=button value=\"PLZ, Don't kill me!!\"/>"
+        content: "This window doesn't have a close button. Or wait, actually, it does: <input id='closeme' type=button value='PLZ, Dnt kill me!!' />"
     });
-
-    $("#" + window_ID + " #closeme").click( function() {
-        wingroup.remove_window(window_ID);
-    });
-
 
 
     wingroup.appendWindow({
@@ -58,9 +54,18 @@ $(document).ready( function() {
         content: "<input type=text id='browserbar' style='width:97%;' value='agtp:/ww.Wikapada.CAM/' /><iframe id='browserbar_iframe' src='http://m.wikipedia.org' style='width: 100%; height: 450px;'></iframe><p style='font-size:.7em'> ^ That's just an iframe</p>"
     });
 
-    $('#browserbar').keypress(function (e) {
-        if (e.which == 13) { // enter key, presumably
-            $('#browserbar_iframe').attr('src', $(this).val());
-        }
+
+
+    $(document).ready(function() {
+        $("#closeme").click( function() {
+            wingroup.remove_window(window_ID);
+        });
+
+        $('#browserbar').keypress(function (e) {
+            if (e.which == 13) { // enter key, presumably
+                $('#browserbar_iframe').attr('src', $(this).val());
+            }
+        });
     });
+
 });
