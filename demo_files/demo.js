@@ -31,17 +31,30 @@ $(document).ready( function() {
         content: "I don't have a resize thing in the bottom-right corner, because the `resizable` option is set to false"
     });
     var window_ID = wingroup.appendWindow({
-        title: '<b style="color: darkbeige">No close button</b>',
+        title: '<b style="color: darkred">No close button</b>',
         theme: 'softblue', 
         shadow: false, 
         close_button: false,
         top: 285, left: 560, 
         width: 250, height: 200,
         content: "This window doesn't have a close button. Or wait, actually, it does: \
-<input id='closeme' type=button value=\"PLZ, Don't kill me!!\"/>"
+            <input id='closeme' type=button value=\"PLZ, Don't kill me!!\"/>"
     });
 
     $("#" + window_ID + " #closeme").click( function() {
         wingroup.remove_window(window_ID);
+    });
+
+
+
+    wingroup.appendWindow({
+        title: 'Theme: <b style="color: green; text-shadow: 1px 1px 1px #000">chromium</b>',
+        theme: 'chromium', 
+        shadow: false, 
+        top: 15, left: 825, 
+        width: 400, height: 565,
+        min_height: 565,
+        resizable: false,
+        content: "<input type=text style='width:97%;' value='agtp:/ww.Wikapada.CAM/' /><iframe src='http://m.wikipedia.org' style='width: 100%; height: 450px;'></iframe><p style='font-size:.7em'> ^ That's just an iframe</p>"
     });
 });

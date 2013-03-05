@@ -5,14 +5,20 @@
 }
 
 .set_shadow(@color: #333, @width: 1px, @blur: 9px) {
-  -moz-box-shadow:    0 0 @blur @width @color;
-  -webkit-box-shadow: 0 0 @blur @width @color;
-  box-shadow:         0 0 @blur @width @color;
+    -moz-box-shadow:    0 0 @blur @width @color;
+    -webkit-box-shadow: 0 0 @blur @width @color;
+    box-shadow:         0 0 @blur @width @color;
+}
+.set_inset_shadow(@color: #333, @width: 1px, @blur: 9px) {
+    -moz-box-shadow:    inset 0 0 @blur @width @color;
+    -webkit-box-shadow: inset 0 0 @blur @width @color;
+    box-shadow:         inset 0 0 @blur @width @color;
 }
 
 .shadow {
     .set_shadow;
 }
+
 
 .no-user-select {
     -webkit-touch-callout: none;
@@ -47,6 +53,7 @@
 }
 
 .jswindow {
+    background: #FF0000;
     position: absolute;
     width: 200px;
     height: 200px;
@@ -374,6 +381,44 @@
         right: 0px;
         color: #222;
     }
+}
+
+.jswindow.chromium {
+    background: #738eb1;
+    border-radius: 5px;
+    border: 1px solid #595959;
+    padding: 1px;
+    .window-top {
+        p.window-title {}
+        .close-window-button {
+            margin-top: 3px;
+            margin-right: 3px;
+            height: 5px;
+            width: 22px;
+            border: 1px solid #687e98;
+            border-radius: 2px;
+            b {
+                font-size: 0.8em;
+                position: relative;
+                top: -7px;
+                left: 1px;
+            }
+            &:hover {
+                .set_inset_shadow(#ccd6e3, 1px, 3px)
+            }
+            &:active {
+                background: #5a718e;
+                .set_inset_shadow(lighten(#ccd6e3, -10%), 1px, 2px)
+            }
+        }
+    }
+    .window-content-container {
+        background: #FFFFFF;
+        border: 1px solid #4b5f79;
+        border-radius: 3px;
+    }
+    .window-content {}
+    .resize-window {}
 }
 
 /* Use the skeleton below to create a new theme

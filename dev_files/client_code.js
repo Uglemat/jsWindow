@@ -6,4 +6,5 @@ $(document).ready(function () {
     wg.appendWindow({title: "HALLALAL"});
     wg.appendWindow({title: "My title AYAYAY",theme:"softblue",top:40,left:40});
     wg.appendWindow({title: "",theme:"windows7", shadow: true, min_height: 300});
+    wg.appendWindow({title: "My title AYAYAY",theme:"chromium",top:300,left:400});
 });
