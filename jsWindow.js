@@ -371,4 +371,19 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                     {id: groupSettings.id}), closewin);
             });
         });  
+
+};
+
+jsWindow.get_location_information = function(win_id) {
+    /* Useful for when you want to place windows in specific locations.
+     * You can just move it around so it's in the right spot, and use the
+     * output from this function as as window settings.
+     */
+    var win = $('#'+win_id);
+    return {
+        top: parseInt(win.css('top')),
+        left: parseInt(win.css('left')),
+        width: win.outerWidth(),
+        height: win.outerHeight()
+    };
 };
