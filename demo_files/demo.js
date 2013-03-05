@@ -55,6 +55,12 @@ $(document).ready( function() {
         width: 400, height: 565,
         min_height: 565,
         resizable: false,
-        content: "<input type=text style='width:97%;' value='agtp:/ww.Wikapada.CAM/' /><iframe src='http://m.wikipedia.org' style='width: 100%; height: 450px;'></iframe><p style='font-size:.7em'> ^ That's just an iframe</p>"
+        content: "<input type=text id='browserbar' style='width:97%;' value='agtp:/ww.Wikapada.CAM/' /><iframe id='browserbar_iframe' src='http://m.wikipedia.org' style='width: 100%; height: 450px;'></iframe><p style='font-size:.7em'> ^ That's just an iframe</p>"
+    });
+
+    $('#browserbar').keypress(function (e) {
+        if (e.which == 13) { // enter key, presumably
+            $('#browserbar_iframe').attr('src', $(this).val());
+        }
     });
 });
