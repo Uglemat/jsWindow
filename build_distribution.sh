@@ -11,8 +11,17 @@ dest="jsWindow_distribution"
 echo "Destionation folder: $dest"
 
 if [ -a $dest ]; then
-    echo "\"$dest\" already exists. Removing..."
+    echo "\"$dest\" already exists:"
+    read -p "  *  Press enter to remove it. Press an alphanumeric character like 'n' to abort removal." -n 1 -r
+    if [[ $REPLY =~ [a-zA-Z0-9] ]]; then 
+        echo
+        echo "Abort... $dest was not removed."
+        exit 0
+    fi
+
+    echo -n "Removing $dest..."
     rm -rf $dest
+    echo " Done."
 fi
 
 mkdir $dest

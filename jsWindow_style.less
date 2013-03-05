@@ -391,6 +391,7 @@
     .window-top {
         p.window-title {}
         .close-window-button {
+            .set_inset_shadow(#9cb0c8, 1px, 1px);
             margin-top: 3px;
             margin-right: 3px;
             height: 5px;
@@ -404,11 +405,11 @@
                 left: 1px;
             }
             &:hover {
-                .set_inset_shadow(#ccd6e3, 1px, 3px)
+                .set_inset_shadow(#ccd6e3, 1px, 2px);
             }
             &:active {
                 background: #5a718e;
-                .set_inset_shadow(lighten(#ccd6e3, -10%), 1px, 2px)
+                .set_inset_shadow(lighten(#ccd6e3, -10%), 1px, 2px);
             }
         }
     }
