@@ -47,7 +47,10 @@ String.prototype.format = function () {
     // then length will be 3. replacement is the actual content that shall replace "{1}".
 
     replacements.sort(function(a, b) {
-        return a.start > b.start;
+        a = a.start;
+        b = b.start;
+        return (a === b) ? 0 
+            :  (a > b) ? 1 : -1;
     });
     // We sort the replacements in increasing start index order. We assume it's
     // impossible that there are any overlaps with the replacements, so we'll do
