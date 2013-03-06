@@ -54,7 +54,13 @@ $(document).ready( function() {
         content: "<input type=text id='browserbar' style='width:97%;' value='agtp:/ww.Wikapada.CAM/' /><iframe id='browserbar_iframe' src='http://m.wikipedia.org' style='width: 100%; height: 450px;'></iframe><p style='font-size:.7em'> ^ That's just an iframe</p>"
     });
 
-
+    wingroup.appendWindow({
+        title: '',
+        theme: 'windows7',
+        top:500, left:561,
+        height: 115, width: 250,
+        content: "Set the title to the empty string for this effect."
+    });
 
     $(document).ready(function() {
         $("#closeme").click( function() {
