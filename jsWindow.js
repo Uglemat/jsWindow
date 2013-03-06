@@ -50,7 +50,7 @@ String.prototype.format = function () {
         a = a.start;
         b = b.start;
         return (a === b) ? 0 
-            :  (a > b) ? 1 : -1;
+            :  (a  >  b) ? 1 : -1;
     });
     // We sort the replacements in increasing start index order. We assume it's
     // impossible that there are any overlaps with the replacements, so we'll do
