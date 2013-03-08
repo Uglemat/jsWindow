@@ -319,41 +319,52 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     $(document).on(
         "mousedown", ".{id} .jswindow .window-top p.window-title".format(
             {id: groupSettings.id}), 
-        function(e) {
+        function(down_event) {
             var win = $(this).parent().parent();
             if (groupSettings.opaque_when_moving) {
                 win.addClass("opacity");
             }
 
             var of = win.offset();
-            var clickoffset = {'top': e.pageY - of.top,
-                               'left':e.pageX - of.left};
+            var clickoffset = {'top':  down_event.pageY - of.top,
+                               'left': down_event.pageX - of.left};
+
+            if (groupSettings.fixed_position) {
+                clickoffset.top  += $(window).scrollTop();
+                clickoffset.left += $(window).scrollLeft();
+            }
 
             // I create orig_document_height because if I use $(document).outerHeight()
             // in the callback function, it'll be buggy and won't really work for whatever
             // reason.
             var orig_document_height = $(document).outerHeight();
-            $(document).on('mousemove.move', function(e) {
+            $(document).on('mousemove.move', function(move_event) {
                 $(document).off("mouseup.close-window",".{id} .close-window-button".format(
                     {id: groupSettings.id}));
 
-                var position = {"top" : e.pageY - clickoffset.top,
-                                "left": e.pageX - clickoffset.left};
+                var position = {"top" : move_event.pageY - clickoffset.top,
+                                "left": move_event.pageX - clickoffset.left};
+                console.log(position);
                 
+                var S = groupSettings.keep_windows_on_page;
                 // Down below is the logic that keeps windows from leaving the website
-                if (position.top < 0 && groupSettings.keep_windows_on_page.top) {  // TOP
-                    position.top = 0; }
-                if (position.left < 0 && groupSettings.keep_windows_on_page.left) { // LEFT
-                    position.left = 0; }
-                
-                 if (position.left > $(document).outerWidth()-win.outerWidth() && // RIGHT
-                    groupSettings.keep_windows_on_page.right) { 
-                    position.left = $(document).outerWidth()-win.outerWidth();
+                if (position.top < 0 && S.top) {  // TOP
+                    position.top = 0;
+                }
+                if (position.left < 0 && S.left) { // LEFT
+                    position.left = 0;
                 }
                 
-                if (position.top > orig_document_height - win.outerHeight() && // BOTTOM
-                    groupSettings.keep_windows_on_page.bottom) { 
-                    position.top = orig_document_height - win.outerHeight();
+                var width  = (groupSettings.fixed_position) ? $(window).outerWidth()  : $(document).outerWidth();
+                var height = (groupSettings.fixed_position) ? $(window).outerHeight() : orig_document_height;
+
+
+                if (position.left > width - win.outerWidth() && S.right) {  // RIGHT
+                    position.left = width - win.outerWidth();
+                }
+                
+                if (position.top > height - win.outerHeight() && S.bottom) {  // BOTTOM 
+                    position.top = height - win.outerHeight();
                 }
                 windowGroup.set_location(win.attr('id'),position);
             });
