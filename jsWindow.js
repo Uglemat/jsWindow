@@ -115,7 +115,6 @@ jsWindow.assure_is_alphanumeric = function(stuff, message) {
     }
 };
 
-jsWindow.done_bindings = false;
 jsWindow.windowGroup = function (container, additionalGroupSettings) {
     "use strict";
     var windowGroup = this;
@@ -134,7 +133,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         theme: "plain",
         shadow: false,
         min_height: 100,
-        min_width: 150
+        min_width: 150,
+        fixed_position: false
     };
     jsWindow.update_with(groupSettings, additionalGroupSettings);
     jsWindow.assure_is_alphanumeric(groupSettings.id);
@@ -145,7 +145,22 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         default_keep_windows_on_page_settings;
 
     container.addClass(groupSettings.id);
+    
+    this.set_location = function(win_id, location) {
+        var win = $(".jswindow#" + win_id);
+        win.css(location);
+        
+        if (location.height) {
+            var cont_cont = win.children(".window-content-container");
+            var win_top = win.children(".window-top");
 
+            // The content container is the part below window-top. It's height 
+            // is win_top.outerHeight() less than #jswindow. Plus some fine adjustment.
+            // I tried fixing this, without the fine adjustment, but it turned out not
+            // to be so straight forward. This is good enough.
+            cont_cont.css("height",location.height - win_top.outerHeight()-16);
+        }
+    };
 
     this.remove_window = function(win_id) {
         if (windows.indexOf(win_id) === -1) {
@@ -195,6 +210,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             min_width: groupSettings.min_width,
             theme: groupSettings.theme,
             shadow: groupSettings.shadow,
+            fixed_position: groupSettings.fixed_position,
             id: "1"  /* <- dummy ID, shall never be used. 
                       * userSettings should always have it's own ID which will replace it.
                       * update_with assumes the first parameter contains *all* properties,
@@ -208,7 +224,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         windowSettings[settings.id] = settings;
 
         var window_html = 
-                (" <div class='jswindow {theme} {shadow}'                     \n" +
+                (" <div class='jswindow {theme} {shadow} {position}'          \n" +
                  "      id='{id}' style='z-index:{zindex};'>                  \n" +
                  "   <div class='window-top'>                                 \n" +
                  "     {close_button}                                         \n" +
@@ -223,7 +239,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                  "   {resize_thing}                                           \n" +
                  " </div>                                                     \n" ).format(
                      {
-                         id: userSettings.id,
+                         id: settings.id,
                          zindex: zindex,
                          close_button: (settings.close_button) ? 
                              "<div class='close-window-button'><b>{X}</b></div>".format(
@@ -233,24 +249,18 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                              "<div class='resize-window'>⌟</div>" : "",
                          content: settings.content,
                          theme: settings.theme,
-                         shadow: (settings.shadow) ? "shadow" : ""
+                         shadow: (settings.shadow) ? "shadow" : "",
+                         position: (settings.fixed_position) ? "fixed" : "abs"
                      });
 
         container.html(container.html() + "\n\n" + window_html);
 
-        var win = $(".jswindow#"+ userSettings.id);
-        var cont_cont = win.children(".window-content-container");
-        var win_top = win.children(".window-top");
-        
-        win.css({ "top"   : settings.top,
-                  "left"  : settings.left,
-                  "width" : settings.width,
-                  "height": settings.height });
-        
-        cont_cont.css("height",settings.height - win_top.outerHeight()-16);
+        windowGroup.set_location(settings.id,
+                                 { "top"   : settings.top,
+                                   "left"  : settings.left,
+                                   "width" : settings.width,
+                                   "height": settings.height });
     };
-
-
 
 
 
@@ -300,15 +310,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                                  e.pageY - of.top + tco);
                 var w = Math.max(windowSettings[win_id]['min_width'], 
                                  e.pageX - of.left + lco);
-                
-                win.css("width",w);
-                win.css("height",h);
-                
-                // The content container is the part below window-top. It's height 
-                // is win_top.outerHeight() less than #jswindow. Plus some fine adjustment.
-                // I tried fixing this, without the fine adjustment, but it turned out not
-                // to be so straight forward. This is good enough.
-                cont_cont.css("height",h-win_top.outerHeight()-16);
+
+                windowGroup.set_location(win_id, {width: w, height: h});
             });
 
             $(document).on("mouseup.stop-resizing", function(e) {
@@ -361,7 +364,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                     groupSettings.keep_windows_on_page.bottom) { 
                     position.top = orig_document_height - win.outerHeight();
                 }
-                win.css(position);
+                windowGroup.set_location(win.attr('id'),position);
             });
             
             $(document).on('mouseup.stop-windowmove', function(e) {
