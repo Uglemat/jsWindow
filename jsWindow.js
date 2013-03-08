@@ -281,7 +281,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                    });
     $(document).on(
         "mousedown", ".{id} .jswindow .resize-window".format({id: groupSettings.id}), 
-        function(e) {
+        function(down_event) {
             $(document).off("mouseup.close-window",".{id} .close-window-button".format(
                 {id: groupSettings.id}));
 
@@ -291,27 +291,18 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             if (groupSettings.opaque_when_resizing) {
                 win.addClass("opacity");
             }
-            var cont_cont = win.children(".window-content-container");
-            var win_top = win.children(".window-top");
-            var of = win.offset();
-            
-            var winwidth = win.outerWidth();
-            var winheight = win.outerHeight();
-            var lco = winwidth - (e.pageX - of.left);
-            var tco = winheight - (e.pageY - of.top);
-            // ^ This is awful. It has something to do with the mouse
-            // cursor, so that when you resize the window, it will remember
-            // where your cursor was when clicking and move the corner relative
-            // to the original cursor position so that the window corner won't
-            // do a sudden "jump".
 
-            $(document).on('mousemove.resize', function(e) {
-                var h = Math.max(windowSettings[win_id]['min_height'], 
-                                 e.pageY - of.top + tco);
-                var w = Math.max(windowSettings[win_id]['min_width'], 
-                                 e.pageX - of.left + lco);
+            var orig_winwidth  = win.outerWidth();
+            var orig_winheight = win.outerHeight();
 
-                windowGroup.set_location(win_id, {width: w, height: h});
+            $(document).on('mousemove.resize', function(move_event) {
+                windowGroup.set_location(
+                    win_id, 
+                    {width:  Math.max(windowSettings[win_id]['min_width'],
+                                      move_event.pageX + orig_winwidth  - down_event.pageX), 
+                     height: Math.max(windowSettings[win_id]['min_height'],
+                                      move_event.pageY + orig_winheight - down_event.pageY)
+                    });
             });
 
             $(document).on("mouseup.stop-resizing", function(e) {
