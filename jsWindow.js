@@ -321,6 +321,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             {id: groupSettings.id}), 
         function(down_event) {
             var win = $(this).parent().parent();
+            var win_settings = windowSettings[win.attr('id')];
             if (groupSettings.opaque_when_moving) {
                 win.addClass("opacity");
             }
@@ -329,22 +330,21 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             var clickoffset = {'top':  down_event.pageY - of.top,
                                'left': down_event.pageX - of.left};
 
-            if (groupSettings.fixed_position) {
+            if (win_settings.fixed_position) {
                 clickoffset.top  += $(window).scrollTop();
                 clickoffset.left += $(window).scrollLeft();
             }
 
-            // I create orig_document_height because if I use $(document).outerHeight()
-            // in the callback function, it'll be buggy and won't really work for whatever
-            // reason.
+            // I create orig_document_height because if I use $(document).outerHeight() in the
+            // callback function, it'll be buggy and won't really work for whatever reason.
             var orig_document_height = $(document).outerHeight();
+
             $(document).on('mousemove.move', function(move_event) {
                 $(document).off("mouseup.close-window",".{id} .close-window-button".format(
                     {id: groupSettings.id}));
 
                 var position = {"top" : move_event.pageY - clickoffset.top,
                                 "left": move_event.pageX - clickoffset.left};
-                console.log(position);
                 
                 var S = groupSettings.keep_windows_on_page;
                 // Down below is the logic that keeps windows from leaving the website
@@ -354,10 +354,9 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 if (position.left < 0 && S.left) { // LEFT
                     position.left = 0;
                 }
-                
-                var width  = (groupSettings.fixed_position) ? $(window).outerWidth()  : $(document).outerWidth();
-                var height = (groupSettings.fixed_position) ? $(window).outerHeight() : orig_document_height;
 
+                var width  = (win_settings.fixed_position) ? $(window).outerWidth()  : $(document).outerWidth();
+                var height = (win_settings.fixed_position) ? $(window).outerHeight() : orig_document_height;
 
                 if (position.left > width - win.outerWidth() && S.right) {  // RIGHT
                     position.left = width - win.outerWidth();
