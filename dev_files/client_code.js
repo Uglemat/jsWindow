@@ -9,5 +9,5 @@ $(document).ready(function () {
     wg.appendWindow({title: "My title AYAYAY",theme:"softblue",top:40,left:40});
     wg.appendWindow({title: "",theme:"windows7", shadow: true, min_height: 300, fixed_position: true,
                     keep_windows_on_page:{right:false}});
-    wg.appendWindow({title: "My title AYAYAY", id:"myid",theme:"chromium",top:300,left:400});
+    wg.appendWindow({title: "My title AYAYAY", id:"myid",theme:"ubuntu",top:300,left:400});
 });

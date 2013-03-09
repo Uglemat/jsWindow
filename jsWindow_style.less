@@ -4,10 +4,10 @@
     .opacity(0.8);
 }
 
-.set_shadow(@color: #333, @width: 1px, @blur: 9px) {
-    -moz-box-shadow:    0 0 @blur @width @color;
-    -webkit-box-shadow: 0 0 @blur @width @color;
-    box-shadow:         0 0 @blur @width @color;
+.set_shadow(@color: #333, @width: 1px, @blur: 9px, @x-off: 0, @y-off: 0) {
+    -moz-box-shadow:    @x-off @y-off @blur @width @color;
+    -webkit-box-shadow: @x-off @y-off @blur @width @color;
+    box-shadow:         @x-off @y-off @blur @width @color;
 }
 .set_inset_shadow(@color: #333, @width: 1px, @blur: 9px) {
     -moz-box-shadow:    inset 0 0 @blur @width @color;
@@ -368,6 +368,43 @@
     .resize-window {}
 }
 
+.jswindow.ubuntu {
+    .rounded-top-corners(5px);
+    background: #f2f1f0;
+    .window-top {
+        p.window-title {
+            border: 1px solid #484741;
+            padding: 4px;
+            color: white;
+            .rounded-top-corners(5px);
+            background: rgb(101,100,94);
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(101,100,94,1)), color-stop(50%,rgba(53,53,49,1)), color-stop(99%,rgba(53,53,49,1)));
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65645e', endColorstr='#353531',GradientType=0 );
+            .topdown-gradient(~"rgba(101,100,94,1) 0%,rgba(53,53,49,1) 50%,rgba(53,53,49,1) 99%");
+        }
+        .close-window-button {
+            margin-right: 10px;
+            margin-top: 7px;
+            height: 5px;
+            width: 15px;
+            border-radius: 200px;
+            .gradient(#e75000, #e75000, #fe9572);
+            .set_shadow(#393835, 1px, 2px, 0px, -1px);
+            b {
+                color: #111;
+                font-size: 8px;
+                position: relative;
+                top: -9px;
+                left: 1px;
+            }
+            &:hover {}
+        }
+    }
+    .window-content-container {
+    }
+    .window-content {}
+    .resize-window {}
+}
 /* Use the skeleton below to create a new theme
 .jswindow.theme-name {
     .window-top {
