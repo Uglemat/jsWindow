@@ -369,18 +369,19 @@
 }
 
 .jswindow.ubuntu {
-    .rounded-top-corners(5px);
+    .rounded-top-corners(6px);
     background: #f2f1f0;
     .window-top {
         p.window-title {
             border: 1px solid #484741;
-            padding: 4px;
+            padding: 3px;
             color: white;
-            .rounded-top-corners(5px);
+            font-size: .9em;
+            .rounded-top-corners(6px);
             background: rgb(101,100,94);
-            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(101,100,94,1)), color-stop(50%,rgba(53,53,49,1)), color-stop(99%,rgba(53,53,49,1)));
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgb(101,100,94)), color-stop(50%,rgb(53,53,49)), color-stop(99%,rgb(53,53,49)));
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65645e', endColorstr='#353531',GradientType=0 );
-            .topdown-gradient(~"rgba(101,100,94,1) 0%,rgba(53,53,49,1) 50%,rgba(53,53,49,1) 99%");
+            .topdown-gradient(~"rgb(101,100,94) 0%,rgb(53,53,49) 50%,rgb(53,53,49) 99%");
         }
         .close-window-button {
             margin-right: 10px;
@@ -397,13 +398,18 @@
                 top: -9px;
                 left: 1px;
             }
-            &:hover {}
+            &:hover {
+                .gradient(lighten(#e75000, 10%), lighten(#e75000, 10%), lighten(#fe9572,10%));
+            }
         }
     }
     .window-content-container {
     }
     .window-content {}
-    .resize-window {}
+    .resize-window {
+        top: -17px;
+        left: 2px;
+    }
 }
 /* Use the skeleton below to create a new theme
 .jswindow.theme-name {
