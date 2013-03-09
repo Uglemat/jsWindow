@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 force=false
 compress_css=false
 compress_js=false
@@ -80,8 +84,13 @@ else
 fi
 
 if $compress_css; then
+    cat <<EOF > $dest/jsWindow_style.css
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+EOF
     echo "Compiling+compressing jsWindow_style.less --> $dest/jsWindow_style.css"
-    lessc --compress jsWindow_style.less > $dest/jsWindow_style.css
+    lessc --compress jsWindow_style.less >> $dest/jsWindow_style.css
 else
     echo "Compiling jsWindow_style.less --> $dest/jsWindow_style.css"
     lessc jsWindow_style.less > $dest/jsWindow_style.css
