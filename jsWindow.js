@@ -121,12 +121,10 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     var windowSettings = {};
 
     var windows = [];
-    var default_keep_windows_on_page_settings = 
-            {top: true, bottom: false, left: false, right: false};
 
     var groupSettings = {
         start_z_index: 100,
-        keep_windows_on_page: {},
+        keep_windows_on_page: {top: true, bottom: false, left: false, right: false},
         opaque_when_moving: false,
         opaque_when_resizing: true,
         id: jsWindow.generate_id(jsWindow.groups, "groupID"),
@@ -136,13 +134,10 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         min_width: 150,
         fixed_position: false
     };
+    jsWindow.update_with(groupSettings.keep_windows_on_page, additionalGroupSettings.keep_windows_on_page);
+    delete additionalGroupSettings.keep_windows_on_page;
     jsWindow.update_with(groupSettings, additionalGroupSettings);
     jsWindow.assure_is_alphanumeric(groupSettings.id);
-
-    jsWindow.update_with(default_keep_windows_on_page_settings,
-                         groupSettings.keep_windows_on_page);
-    groupSettings.keep_windows_on_page = 
-        default_keep_windows_on_page_settings;
 
     container.addClass(groupSettings.id);
     
@@ -211,6 +206,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             theme: groupSettings.theme,
             shadow: groupSettings.shadow,
             fixed_position: groupSettings.fixed_position,
+            keep_windows_on_page: groupSettings.keep_windows_on_page,
             id: "1"  /* <- dummy ID, shall never be used. 
                       * userSettings should always have it's own ID which will replace it.
                       * update_with assumes the first parameter contains *all* properties,
@@ -218,6 +214,9 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                       * will be thrown because that shouldn't happen. 
                       * That's why there's a dummy ID */
         };
+        jsWindow.update_with(settings.keep_windows_on_page, userSettings.keep_windows_on_page);
+        delete userSettings.keep_windows_on_page;
+
         jsWindow.update_with(settings, userSettings);
         jsWindow.assure_is_alphanumeric(settings.theme, "Invalid theme");
 
