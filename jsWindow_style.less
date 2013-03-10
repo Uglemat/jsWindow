@@ -405,6 +405,9 @@
             &:hover {
                 .gradient(lighten(#e75000, 10%), lighten(#e75000, 10%), lighten(#fe9572,10%));
             }
+            &:active {
+                .gradient(lighten(#e75000, -10%), lighten(#e75000, -10%), lighten(#fe9572,-10%));
+            }
         }
     }
     .window-content-container {
@@ -414,6 +417,28 @@
         top: -17px;
         left: 2px;
     }
+}
+
+.jswindow.orangeish {
+    border: 1px solid gray;
+    border-radius: 10px;
+    background: white;
+    .window-top {
+        background: orange;
+        padding: 0;
+        margin: 2px;
+        border-radius: 5px;
+        border: 1px solid darkorange;
+        .set_inset_shadow(darkorange, 3px, 4px);
+        p.window-title {}
+        .close-window-button {
+            b {}
+            &:hover {}
+        }
+    }
+    .window-content-container {}
+    .window-content {}
+    .resize-window {}
 }
 /* Use the skeleton below to create a new theme
 .jswindow.theme-name {
