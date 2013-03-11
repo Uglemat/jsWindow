@@ -2,13 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-String.prototype.format = function () {
+String.prototype.jsWin_format = function () {
     "use strict";
     /* String formatting. Example:
-     * "{0}{hall}{0}{1}".format(55555, {hall: "{omg}{omg}", omg: "{hall}"});
+     * "{0}{hall}{0}{1}".jsWin_format(55555, {hall: "{omg}{omg}", omg: "{hall}"});
      * will return this string: "55555{omg}{omg}55555{1}".
      *
-     * "{3}{2}{1}".format("zero","one","two")"
+     * "{3}{2}{1}".jsWin_format("zero","one","two")"
      * will return this string: "{3}twoone"
      *
      * The object has to be the last item, because anything else wouldn't
@@ -113,7 +113,7 @@ jsWindow.assure_is_alphanumeric = function(stuff, message) {
     message = (typeof message === 'undefined') ? "Invalid ID" : message;
     var alphanumeric = /^[0-9a-zA-Z]+$/;
     if (!String(stuff).match(alphanumeric)) {
-        throw "jsWindow - {message}: '{stuff}'. Must be alphanumeric.".format(
+        throw "jsWindow - {message}: '{stuff}'. Must be alphanumeric.".jsWin_format(
             { message: message, stuff: stuff
             });
     }
@@ -164,7 +164,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     this.remove_window = function(win_id) {
         if (windows.indexOf(win_id) === -1) {
             console.warn("jsWindow - tried to remove non " +
-                         "existent window, unknown ID: {0}".format(win_id));
+                         "existent window, unknown ID: {0}".jsWin_format(win_id));
         } else {
             windows.splice(windows.indexOf(win_id), 1);
             $("#"+ win_id).remove();
@@ -240,12 +240,12 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                  "     </div>                                                 \n" +
                  "   </div>                                                   \n" +
                  "   {resize_thing}                                           \n" +
-                 " </div>                                                     \n" ).format(
+                 " </div>                                                     \n" ).jsWin_format(
                      {
                          id: settings.id,
                          zindex: zindex,
                          close_button: (settings.close_button) ? 
-                             "<div class='close-window-button'><b>{X}</b></div>".format(
+                             "<div class='close-window-button'><b>{X}</b></div>".jsWin_format(
                                  {X:"X"}) : "",
                          title: settings.title,
                          resize_thing: (settings.resizable) ?
@@ -274,18 +274,18 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         windowGroup.remove_window(win.attr('id'));
     }
 
-    $(document).on("mouseup.close-window",".{id} .close-window-button".format(
+    $(document).on("mouseup.close-window",".{id} .close-window-button".jsWin_format(
         {id: groupSettings.id}), closewin);
 
     
-    $(document).on("mousedown", ".{id} .jswindow".format({id: groupSettings.id}),
+    $(document).on("mousedown", ".{id} .jswindow".jsWin_format({id: groupSettings.id}),
                    function (e) {
                        place_on_top($(this).attr('id'));
                    });
     $(document).on(
-        "mousedown", ".{id} .jswindow .resize-window".format({id: groupSettings.id}), 
+        "mousedown", ".{id} .jswindow .resize-window".jsWin_format({id: groupSettings.id}), 
         function(down_event) {
-            $(document).off("mouseup.close-window",".{id} .close-window-button".format(
+            $(document).off("mouseup.close-window",".{id} .close-window-button".jsWin_format(
                 {id: groupSettings.id}));
 
             $("*").addClass("no-user-select");
@@ -315,12 +315,12 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 }
                 $(this).off('mousemove.resize');
                 $(this).off('mouseup.stop-resizing');
-                $(document).on("mouseup.close-window",".{id} .close-window-button".format(
+                $(document).on("mouseup.close-window",".{id} .close-window-button".jsWin_format(
                     {id: groupSettings.id}), closewin);
             });
         });
     $(document).on(
-        "mousedown", ".{id} .jswindow .window-top p.window-title".format(
+        "mousedown", ".{id} .jswindow .window-top p.window-title".jsWin_format(
             {id: groupSettings.id}), 
         function(down_event) {
             var win = $(this).parent().parent();
@@ -343,7 +343,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             var orig_document_height = $(document).outerHeight();
 
             $(document).on('mousemove.move', function(move_event) {
-                $(document).off("mouseup.close-window",".{id} .close-window-button".format(
+                $(document).off("mouseup.close-window",".{id} .close-window-button".jsWin_format(
                     {id: groupSettings.id}));
 
                 var position = {"top" : move_event.pageY - clickoffset.top,
@@ -377,7 +377,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 }
                 $(this).off('mousemove.move');
                 $(this).off('mouseup.stop-windowmove');
-                $(document).on("mouseup.close-window",".{id} .close-window-button".format(
+                $(document).on("mouseup.close-window",".{id} .close-window-button".jsWin_format(
                     {id: groupSettings.id}), closewin);
             });
         });  
