@@ -4,10 +4,16 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+
+if [ $# == 0 ]; then
+    echo "Run \`$0 -h\` for to see more options"
+fi
+
 force=false
 compress_css=false
 compress_js=false
 dest="jsWindow_distribution"
+orig_dest=$dest
 
 while getopts ":fd:cjh" opt; do
     case $opt in
@@ -22,17 +28,18 @@ while getopts ":fd:cjh" opt; do
                 echo >&2 "This script uses uglifyjs to compress javascipt, you need to have it installed to use the -f option"
                 exit 1
             }
+            echo "Found uglifyjs: $(which uglifyjs)"
             compress_js=true   ;;
-        h) cat <<EOF 
-build_distribution.sh options: 
- -f      : force (don't ask before deleting $dest if allready existing).
- -d DEST : Set destination directory (default jsWindow_distribution).
+        h) cat <<EOF
+$0 options: 
+ -f      : force (don't ask before deleting the destination if already existing).
+ -d DEST : Set destination directory (default $orig_dest).
  -c      : Compress css with lessc (it doesn't compress css by default).
  -j      : Compress javascript with uglifyjs (it doesn't compress js by default).
  -h      : Show these options.
 
 example:
- $ ./build_distribution.sh -f -d my_dist -cj
+ $ $0 -f -d my_dist -cj
                             |  |          |
                             |  |          Compress css and javascript
                             |  Put the new distribution inside my_dist
