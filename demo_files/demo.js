@@ -45,10 +45,9 @@ var window_ID = wingroup.appendWindow({
     shadow: false, 
     close_button: false,
     top: 285, left: 560, 
-    width: 250, height: 200,
+    width: 252, height: 173,
     content: "This window doesn't have a close button. Or wait, actually, it does: <input id='closeme' type=button value='PLZ, Dnt kill me!!' />"
 });
-
 
 wingroup.appendWindow({
     title: 'Theme: <b style="color: green; text-shadow: 1px 1px 1px #000">chromium</b>',
@@ -65,8 +64,8 @@ wingroup.appendWindow({
     id: "myid",
     title: '',
     theme: 'windows7',
-    top:500, left:561,
-    height: 115, width: 250,
+    top:475, left:562,
+    height: 106, width: 250,
     content: "Set the title to the empty string for this effect."
 });
 
@@ -81,6 +80,27 @@ wingroup.appendWindow({
     height: 248
 });
 
+wingroup.appendWindow({
+    theme: "mac",
+    title: "Theme: <b>mac</b>",
+    content: "",
+    top:594, left:563, width:663, height:172
+});
+
+wingroup.appendWindow({
+    theme: "ubuntu",
+    title: "Theme: <b>ubuntu</b>",
+    content: "",
+    top:781, left:17, width:363, height:152
+});
+
+wingroup.appendWindow({
+    theme: "orangeish",
+    title: "Theme: <b>orangeish</b>",
+    content: "",
+    top:781, left:363+17+15, width:363, height:152
+});
+//[07:21:09.801] ({top:594, left:563, width:663, height:172})
 $(document).ready(function() {
     $("#closeme").click( function() {
         wingroup.remove_window(window_ID);

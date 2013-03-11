@@ -392,7 +392,7 @@
             margin-top: 7px;
             height: 5px;
             width: 15px;
-            border-radius: 200px;
+            border-radius: 100px;
             .gradient(#e75000, #e75000, #fe9572);
             .set_shadow(#393835, 1px, 2px, 0px, -1px);
             b {
@@ -420,26 +420,65 @@
 }
 
 .jswindow.orangeish {
-    border: 1px solid gray;
     border-radius: 10px;
-    background: white;
+    background: #BBB;
     .window-top {
         background: orange;
         padding: 0;
-        margin: 2px;
         border-radius: 5px;
-        border: 1px solid darkorange;
+        border: 1px solid #555;
         .set_inset_shadow(darkorange, 3px, 4px);
         p.window-title {}
         .close-window-button {
             b {}
-            &:hover {}
+            &:hover {
+                b { color: black; }
+            }
         }
     }
     .window-content-container {}
     .window-content {}
     .resize-window {}
 }
+.jswindow.mac {
+    background: white;
+    .rounded-top-corners(7px);
+    .window-top {
+        .rounded-top-corners(7px);
+        .gradient(#979797, #979797, #c4c4c4);
+        height: 25px;
+        border-bottom: 1px solid #404040;
+        p.window-title {
+            font-size: .85em;
+            text-shadow: 0 1px #c7c5bb;
+        }
+        .close-window-button {
+            margin-right: 10px;
+            margin-top: 5px;
+            height: 5px;
+            width: 15px;
+            border-radius: 50px;
+            .gradient(#e52426, #e52426, #df2628);
+            .set_inset_shadow(lighten(#393835,4%), 1px, 1px);
+            b {
+                font-size: 0;
+                color: rgba(0,0,0,1);
+                .set_shadow(@color: #FFF, @width: 2px, 
+                            @blur: 4px, @y-off: -10px, @x-off: 0px)
+            }
+            &:hover {
+                .gradient(lighten(#e52426,10%), lighten(#e52426,10%), lighten(#df2628,10%));
+            }
+            &:active {
+                .gradient(lighten(#e52426,-10%), lighten(#e52426,-10%), lighten(#df2628,-10%));
+            }
+        }
+    }
+    .window-content-container {}
+    .window-content {}
+    .resize-window {}
+}
+
 /* Use the skeleton below to create a new theme
 .jswindow.theme-name {
     .window-top {
