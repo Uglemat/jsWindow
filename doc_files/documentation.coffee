@@ -1,3 +1,5 @@
+# License: http://creativecommons.org/licenses/by-sa/3.0/
+
 stripX = (str) ->
         str.replace(/\&(?!(\w+;))/g, '&amp;').replace(/</g, '&lt;')
 

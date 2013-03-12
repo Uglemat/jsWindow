@@ -12,10 +12,12 @@ fi
 force=false
 compress_css=false
 compress_js=false
+include_documentation=false
+
 dest="jsWindow_distribution"
 orig_dest=$dest
 
-while getopts ":fd:cjh" opt; do
+while getopts ":fd:cjhu" opt; do
     case $opt in
         \?) echo "Invalid option: -$OPTARG. Use the -h option for help." >&2
             exit 1             ;;
@@ -25,17 +27,24 @@ while getopts ":fd:cjh" opt; do
         d)  dest=$OPTARG       ;; 
         c)  compress_css=true  ;;
         j)  command -v uglifyjs 1>&- 2>&- || { 
-                echo >&2 "This script uses uglifyjs to compress javascipt, you need to have it installed to use the -f option"
+                echo >&2 "This script uses uglifyjs to compress javascipt, you need to have it installed to use the -j option"
                 exit 1
             }
             echo "Found uglifyjs: $(which uglifyjs)"
             compress_js=true   ;;
+        u) command -v coffee 1>&- 2>&- || {
+                echo >&2 "The documentation uses coffee-script, you need to have it installed to use the -u option"
+                exit 1
+            }
+            echo "Found coffee: $(which coffee)"
+            include_documentation=true ;;
         h) cat <<EOF
 $0 options: 
  -f      : force (don't ask before deleting the destination if already existing).
  -d DEST : Set destination directory (default $orig_dest).
  -c      : Compress css with lessc (it doesn't compress css by default).
  -j      : Compress javascript with uglifyjs (it doesn't compress js by default).
+ -u      : Unclude the documentation in the distribution.
  -h      : Show these options.
 
 example:
@@ -105,9 +114,14 @@ fi
 
 echo -n "Copying demo files into $dest.. "
 cp demo_files/* $dest
-echo  "done. You should now be able to open $dest/demo.html in your browser."
+echo "Done."
+if $include_documentation; then
+    mkdir $dest/doc
+    echo -n "Compiling documentation..."
+    lessc doc_files/documentation.less > $dest/doc/documentation.css
+    coffee -p doc_files/documentation.coffee > $dest/doc/documentation.js
+    cp doc_files/documentation.html $dest/doc/documentation.html
+    echo " Done."
+fi
 
-mkdir $dest/doc
-lessc doc_files/documentation.less > $dest/doc/documentation.css
-coffee -p doc_files/documentation.coffee > $dest/doc/documentation.js
-cp doc_files/documentation.html $dest/doc/documentation.html
+echo  "You should now be able to open $dest/demo.html in your browser."
