@@ -2,6 +2,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+function clone(obj) {
+    if (null == obj || "object" != typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+        if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+}
+
 String.prototype.jsWin_format = function () {
     "use strict";
     /* String formatting. Example:
@@ -138,8 +147,10 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         min_width: 150,
         fixed_position: false
     };
-    jsWindow.update_with(groupSettings.keep_windows_on_page, additionalGroupSettings.keep_windows_on_page);
-    delete additionalGroupSettings.keep_windows_on_page;
+    if (!additionalGroupSettings === undefined) {
+        jsWindow.update_with(groupSettings.keep_windows_on_page, additionalGroupSettings.keep_windows_on_page);
+        delete additionalGroupSettings.keep_windows_on_page;
+    }
     jsWindow.update_with(groupSettings, additionalGroupSettings);
     jsWindow.assure_is_alphanumeric(groupSettings.id);
 
@@ -210,7 +221,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             theme: groupSettings.theme,
             shadow: groupSettings.shadow,
             fixed_position: groupSettings.fixed_position,
-            keep_windows_on_page: groupSettings.keep_windows_on_page,
+            keep_windows_on_page: clone(groupSettings.keep_windows_on_page),
             id: "1"  /* <- dummy ID, shall never be used. 
                       * userSettings should always have it's own ID which will replace it.
                       * update_with assumes the first parameter contains *all* properties,
@@ -349,7 +360,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
                 var position = {"top" : move_event.pageY - clickoffset.top,
                                 "left": move_event.pageX - clickoffset.left};
                 
-                var S = groupSettings.keep_windows_on_page;
+                var S = win_settings.keep_windows_on_page;
                 // Down below is the logic that keeps windows from leaving the website
                 if (position.top < 0 && S.top) {  // TOP
                     position.top = 0;

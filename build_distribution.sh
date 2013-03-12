@@ -106,3 +106,8 @@ fi
 echo -n "Copying demo files into $dest.. "
 cp demo_files/* $dest
 echo  "done. You should now be able to open $dest/demo.html in your browser."
+
+mkdir $dest/doc
+lessc doc_files/documentation.less > $dest/doc/documentation.css
+coffee -p doc_files/documentation.coffee > $dest/doc/documentation.js
+cp doc_files/documentation.html $dest/doc/documentation.html
