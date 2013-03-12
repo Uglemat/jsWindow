@@ -138,8 +138,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
     var groupSettings = {
         start_z_index: 100,
         keep_windows_on_page: {top: true, bottom: false, left: false, right: false},
-        opaque_when_moving: false,
-        opaque_when_resizing: true,
+        transparent_when_moving: false,
+        transparent_when_resizing: true,
         id: jsWindow.generate_id(jsWindow.groups, "groupID"),
         theme: "plain",
         shadow: false,
@@ -302,7 +302,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             $("*").addClass("no-user-select");
             var win = $(this).parent();
             var win_id = win.attr('id');
-            if (groupSettings.opaque_when_resizing) {
+            if (groupSettings.transparent_when_resizing) {
                 win.addClass("opacity");
             }
 
@@ -321,7 +321,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
 
             $(document).on("mouseup.stop-resizing", function(e) {
                 $("*").removeClass("no-user-select");
-                if (groupSettings.opaque_when_resizing) {
+                if (groupSettings.transparent_when_resizing) {
                     win.removeClass("opacity");
                 }
                 $(this).off('mousemove.resize');
@@ -336,7 +336,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         function(down_event) {
             var win = $(this).parent().parent();
             var win_settings = windowSettings[win.attr('id')];
-            if (groupSettings.opaque_when_moving) {
+            if (groupSettings.transparent_when_moving) {
                 win.addClass("opacity");
             }
 
@@ -383,7 +383,7 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             });
             
             $(document).on('mouseup.stop-windowmove', function(e) {
-                if (groupSettings.opaque_when_moving) {
+                if (groupSettings.transparent_when_moving) {
                     win.removeClass("opacity");
                 }
                 $(this).off('mousemove.move');
