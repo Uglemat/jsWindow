@@ -102,10 +102,10 @@ windowsettings.add_setting(["top","This is the top CSS value of the window. This
 windowsettings.add_setting(["left","Same deal as with the top setting above.","0"])
 windowsettings.add_setting(["min_height","Same as for group settings, but only for this window.","Same as the respective group settings value"])
 windowsettings.add_setting(["min_width","Same as for group settings, but only for this window.","Same as the respective group settings value"])
-windowsettings.add_setting(["theme","Same as for group settings, but only for this window.","Default value: Same as the respective group settings value"])
-windowsettings.add_setting(["shadow","Same as for group settings, but only for this window.","Default value: Same as the respective group settings value"])
-windowsettings.add_setting(["fixed_position","Same as for group settings, but only for this window.","Default value: Same as the respective group settings value"])
-windowsettings.add_setting(["keep_windows_on_page","Same as for group settings, but only for this window.","Default value: Same as the respective group settings value"])
+windowsettings.add_setting(["theme","Same as for group settings, but only for this window.","Same as the respective group settings value"])
+windowsettings.add_setting(["shadow","Same as for group settings, but only for this window.","Same as the respective group settings value"])
+windowsettings.add_setting(["fixed_position","Same as for group settings, but only for this window.","Same as the respective group settings value"])
+windowsettings.add_setting(["keep_windows_on_page","Same as for group settings, but only for this window.","Same as the respective group settings value"])
 windowsettings.add_setting(["id","The id of the window. This is the actual id, not a class like for the group settings.","A value will be generated randomatically"])
 
 
