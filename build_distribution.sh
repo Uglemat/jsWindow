@@ -92,8 +92,15 @@ mkdir $dest/resources
 cp resources/jquery-1.9.1.min.js $dest/resources/jquery-1.9.1.min.js
 
 if $compress_js; then
+    # Seems like some versions of uglifyjs does keep the license stuff while others don't
+    # Better be safe than sorry, so I just add it in here as well.
+    cat <<EOF > $dest/jsWindow.js
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+EOF
     echo "Compressing jsWindow.js --> $dest/jsWindow.js"
-    uglifyjs jsWindow.js > $dest/jsWindow.js
+    uglifyjs jsWindow.js >> $dest/jsWindow.js
 else
     echo "Copying jsWindow.js --> $dest/jsWindow.js"
     cp jsWindow.js $dest/jsWindow.js
