@@ -24,10 +24,7 @@ doc.add("""
 """)
 
 doc.add("""<h2 id="whatisjswindowfor">What is jsWindow for?</h2>
-<p>jsWindow is for creating fun little desktop windows in the browser. Nothing serious. Seriously, don't take this thing too seriously. Will it work for browser X with something Y? I have no idea. You figure that out, since you're so serious. Is jsWindow tested and stuff like that? No. This project probably has many bugs, I developed it as a fun project to work on. I'm not very experienced when it comes to web development. Take this for what it is, a fun little project, and it seems to be working fine with Firefox and Chromium, which is the browsers I've been trying it out in regularly. It also seemed to work last time I tried it in IE 10, but I don't have time to keep track of all those things.</p>
-
-<p>All the code snippets with pink background shown on this page are actually run in the background. (that is, the code which creates the windows, in case you're color blind or something).</p>
-""")
+<p>jsWindow is for creating fun little desktop windows in the browser. Nothing serious. Seriously, don't take this thing too seriously. Will it work for browser X with something Y? I have no idea. You figure that out, since you're so serious. Is jsWindow tested and stuff like that? No. This project probably has many bugs, I developed it as a fun project to work on. I'm not very experienced when it comes to web development. Take this for what it is, a fun little project, and it seems to be working fine with Firefox and Chromium, which is the browsers I've been trying it out in regularly. It also seemed to work last time I tried it in IE 10, but I don't have time to keep track of all those things.</p>""")
 
 doc.add("""
 <h2 id="gettingstarted">Getting started</h2>
