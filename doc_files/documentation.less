@@ -1,17 +1,30 @@
 /* License: http://creativecommons.org/licenses/by-sa/3.0/ */
 * { margin: 0; padding: 0; }
-
-pre.prettyprint {
-    font-size: 10px;
-    padding: 5px;
-    border: 1px dashed gray;
-    background: lightgray;
+a {
+    font-weight: bold;
+    color: white;
+    &:hover {
+        color: red;
+    }
 }
+
 .code {
+    pre.prettyprint {
+        font-size: 10px;
+        padding: 5px;
+        border: 1px dashed gray;
+        background: lightgray;
+    }
     margin: 20px;
     width: 90%;
     margin: 0 auto;
+    &.realcode {
+        pre.prettyprint {
+            background: #EBB;
+        }
+    }
 }
+
 #container {
     width: 800px;
     background: lightgreen;
@@ -28,36 +41,57 @@ h1#awesomeheader {
     margin-bottom: 20px;
     color: pink;
 }
-#doc_container h2 {
-    font-family: 'Rufina', serif;
-    text-shadow: 1px 1px 0px #F00;
-    font-size: 19px;
-    color: yellow;
-    margin-left: 60px;
-    margin-top: 20px;
-}
-#doc_container p {
-    font-family: 'Rufina', serif;
-    background: rgba(0,0,0,.4);
-    font-size: 14px;
-    margin: 5px;
-    margin-left: 20px;
-    padding: 5px;
+#doc_container {
+    h2 {
+        font-family: 'Rufina', serif;
+        text-shadow: 1px 1px 0px #F00;
+        font-size: 19px;
+        color: yellow;
+        margin-left: 60px;
+        margin-top: 20px;
+    }
+    .headerlinkwrapper {
+        text-decoration: none;
+        color: yellow;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+    p {
+        font-family: 'Rufina', serif;
+        background: rgba(0,0,0,.4);
+        font-size: 14px;
+        margin: 5px;
+        margin-left: 20px;
+        padding: 5px;
+    }
+    p.settinginfo {
+        margin: 0 5px 10px 5px;
+    }
+    em {
+        font-style: normal;
+        font-family: 'monospace';
+        font-weight: bold;
+        padding: 0px 2px;
+        background: pink;
+        font-size: .8em;
+        color: #222;
+    }
+    .setting_wrapper em {
+        color: red;
+    }
 }
 .setting {
     display: block;
     padding: 3px;
-    margin: 10px;
-    margin-top: 10px;
     background: beige;
     font-weight: bold;
     color: orange;
     text-shadow: 1px 1px 1px #000;
     cursor: pointer;
+    border-bottom: 1px solid gray;
 }
-#doc_container em {
-    background: pink;
-    font-weight: bold;
-    padding: 0px 2px;
-    color: red;
+
+input.show_settings {
+    margin: 5px;
 }

@@ -7,10 +7,11 @@ class Doc
         constructor: ->
                 @content = ""
                 @code = ""
-        add_code_snippet: (code_snippet) ->
-                @content += """<div class='code'><pre class='prettyprint lang-js'>
+        add_code_snippet: (code_snippet, run_snippet=true, js=true) ->
+                @content += """<div class='code #{if run_snippet then "realcode" else ""}'><pre class='prettyprint #{if js then "lang-js" else ""}'>
                 #{stripX(code_snippet)}</pre></div>"""
-                @code += code_snippet
+                if run_snippet
+                        @code += code_snippet
         get_real_code: ->
                 "<script>#{@code}</script>"
         add: (stuff) ->
@@ -18,12 +19,50 @@ class Doc
 
 doc = new Doc
 
-doc.add("""<h2>What is jsWindow for?</h2>
-<p>jsWindow is for creating fun little desktop windows in the browser. Nothing serious. Seriously, don't take this thing too seriously. Will it work for browser X with something Y? I have no idea. You figure that out, since you're so serious.</p>
+doc.add("""
 
-<p>All the code snippets shown on this page are actually run in the background.</p>
+""")
 
-<p>To use it, first you must create a 'window group' with jsWindow.windowGroup. It takes two parameters, the first is the element thing which all the windows will be contained within. Just place an empty div somewhere in the html, then select it with jquery like below and pass it in. The second parameter is an object containing settings for jsWindow (optional).</p>""")
+doc.add("""<h2 id="whatisjswindowfor">What is jsWindow for?</h2>
+<p>jsWindow is for creating fun little desktop windows in the browser. Nothing serious. Seriously, don't take this thing too seriously. Will it work for browser X with something Y? I have no idea. You figure that out, since you're so serious. Is jsWindow tested and stuff like that? No. This project probably has many bugs, I developed it as a fun project to work on. I'm not very experienced when it comes to web development. Take this for what it is, a fun little project, and it seems to be working fine with Firefox and Chromium, which is the browsers I've been trying it out in regularly. It also seemed to work last time I tried it in IE 10, but I don't have time to keep track of all those things.</p>
+
+<p>All the code snippets with pink background shown on this page are actually run in the background. (that is, the code which creates the windows, in case you're color blind or something).</p>
+""")
+
+doc.add("""
+<h2 id="gettingstarted">Getting started</h2>
+
+<p>You need to include the CSS and Javascript, and you also need jQuery. If you just want to get started, put this into your HTML:</p>
+""")
+
+doc.add_code_snippet("""
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="http://static.smartviking.webfactional.com/jswindow/jsWindow_style.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://static.smartviking.webfactional.com/jswindow/jsWindow.js"></script>
+""", run_snippet=false)
+
+doc.add("""
+<P>You need the meta charset thing because otherwise the browser might start to whine about characters outside of the ASCII range. You can probably use other versions of jQuery as well, try it out and see. If you're doing something that's more or less important, you should <a href="http://static.smartviking.webfactional.com/jswindow/jsWindow.tar">download jsWindow</a>. This is because I can't guarantee the version on this website to always be backwards compatible, and I cannot guarantee the file to always be hosted here for the eternal future. I've got ambitions to keep hosting them, but you never know.</p>
+""")
+
+doc.add("""
+<h2 id="links">Links</h2>
+<p>
+Github repository: <a href="https://github.com/SmartViking/jsWindow">https://github.com/SmartViking/jsWindow</a><br />
+"Homesite" for jsWindows: <a href="http://static.smartviking.webfactional.com/jswindow/">http://static.smartviking.webfactional.com/jswindow/</a><br />
+A jsWindow demo: <a href="http://static.smartviking.webfactional.com/jswindow/demo.html">http://static.smartviking.webfactional.com/jswindow/demo.html</a><br />
+<a href=""></a>
+</p>
+""")
+
+
+doc.add("""
+<h2 id="quickstart">Quickstart</h2>
+
+<p>All the code snippets with pink background shown on this page are actually run in the background, so you can see the windows to the right. (that is, the code which creates the windows in case you're color blind or something).</p>
+
+<p>To use it, first you must create a 'window group' with <em>jsWindow.windowGroup</em>. It takes two parameters, the first is the element thing which all the windows will be contained within. Just place an empty div somewhere in the html, then select it with jquery like below and pass it in. Make sure that you only select one and not multiple elements though, I'm not sure what would happen if you select multiple elements but it's bad and you don't want it to happen. The second parameter is an object containing settings for jsWindow (optional).</p>""")
 
 doc.add_code_snippet("""
 var windowgroup = new jsWindow.windowGroup($('#windows_div'), {
@@ -68,13 +107,13 @@ var blue_window_id = windowgroup.appendWindow({
         top:460, left:860, width:400, height:200
 });""")
 
-doc.add("""<p>appendWindow returns the id of the new window. You can use it to remove the window later with windowgroup.remove_window which takes an id as the only parameter. or jsWindow.get_location_information which gets the top, left, width, and height css properties of the window, or windowgroup.set_location which takes a window id, and an object containing location information. You can basically feed the output of get_location_information into set_location, I think.</p>""")
+doc.add("""<p>appendWindow returns the id of the new window. You can use it to remove the window later with <em>windowgroup.remove_window</em> which takes an id as the only parameter. or <em>jsWindow.get_location_information</em> which gets the top, left, width, and height css properties of the window, or <em>windowgroup.set_location</em> which takes a window id, and an object containing location information. You can basically feed the output of <em>get_location_information</em> into <em>set_location</em>, I think.</p>""")
 
 class Settings
         constructor: (@conf) ->
                 @html = ""
         add_setting: (setting) ->
-                @html += """<span class='setting'>#{setting[0]}</span>  <p>#{setting[1]} </br> <em>Default value: #{setting[2]}</em> </p>"""
+                @html += """<span class='setting'>#{setting[0]}</span>  <p class="settinginfo">#{setting[1]} </br> <em>Default value: #{setting[2]}</em> </p>"""
         get_html: ->
                 """<h2 id='#{@conf.id}'>#{@conf.title}</h2><div class='setting_wrapper'><input class='show_settings' type=button value='Show all' />#{@html}</div>"""
 
@@ -116,7 +155,10 @@ $(document).ready ->
         $("#doc_container").html doc.content
         $("#real_code").html doc.get_real_code()
 
-        $(".setting_wrapper p").css "display", "none"
+        $(".setting_wrapper p").css("display", "none")
+
+        $("#doc_container h2").wrap ->
+                """<a class="headerlinkwrapper" href='\##{$(@).attr('id')}'></a>"""        
         $(".show_settings").click ->
                 if $(@).val() == "Show all"
                         $(@).parent().children("p").css("display", "block")
