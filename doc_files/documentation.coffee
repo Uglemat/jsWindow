@@ -110,31 +110,31 @@ class Settings
         constructor: (@conf) ->
                 @html = ""
         add_setting: (setting) ->
-                @html += """<span class='setting'>#{setting[0]}</span>  <p class="settinginfo">#{setting[1]} </br> <em>Default value: #{setting[2]}</em> </p>"""
+                @html += """<span class='setting'>#{setting[0]}</span>  <p class="settinginfo">#{setting[1]} </br> <em class='default_setting_value'>Default value: #{setting[2]}</em> </p>"""
         get_html: ->
                 """<h2 id='#{@conf.id}'>#{@conf.title}</h2><div class='setting_wrapper'><input class='show_settings' type=button value='Show all' />#{@html}</div>"""
 
 groupsettings  = new Settings {id: "groupsettings",  title: "Group Settings: "}
 windowsettings = new Settings {id: "windowsettings", title: "Window Settings: "}
 
-groupsettings.add_setting(["start_z_index","The z-index of the bottom window in the window group. If you set it to 200 and have 1 window then the z-index of the window will be 200. If you have 10 windows, then the topmost window will have a z-index of 209","100"])
+groupsettings.add_setting(["start_z_index","The <em>z-index</em> of the bottom window in the window group. If you set it to <em>200</em> and have <em>1</em> window then the <em>z-index</em> of the window will be <em>200</em>. If you have <em>10</em> windows, then the topmost window will have a <em>z-index</em> of <em>209</em>","100"])
 groupsettings.add_setting(["keep_windows_on_page", "An object that contains information about what sides the browser window or document windows can move outside of. If the window in question uses fixed positioning, then the sides refers to the visible browser window. If the window uses absolute positioning, then the sides refer to the whole document. Or something like that.", "{top: true, bottom: false, left: false, right: false}"])
 groupsettings.add_setting(["transparent_when_moving","Whether or not the window should be slightly transparent when it's moved.","false"])
 groupsettings.add_setting(["transparent_when_resizing","Whether or not the window should be slightly transparent when it's being resized.","true"])
-groupsettings.add_setting(["id", "The id of the window group. This is added as a *class* to the element you pass into jsWindow.windowGroup, so it's a little confusing. This \"id\" is used internally. You can set this to whatever you want if that makes your code better as long as you make sure it's unique. And alphanumeric.", "A value will be generated randomatically"])
-groupsettings.add_setting(["theme", "Which theme the window should have. This is literally just inserted right into the window as an additional class. It raises an error if it's not alphanumeric, but there's nothing special about it. It relies on there being CSS code for that class. You can pass in your own theme name, and create CSS for it, and voila that's a new theme. Here's the themes you can chose from at the moment of writing: [softblue, windows7, plain, chromium, gnome3, mac, ubuntu, orangeish].", "plain"])
+groupsettings.add_setting(["id", "The <em>id</em> of the window group. This is added as a <em>class</em> to the element you pass into <em>jsWindow.windowGroup</em>, so it's a little confusing. This <em>\"id\"</em> is used internally. You can set this to whatever you want if that makes your code better as long as you make sure it's unique. And alphanumeric.", "A value will be generated randomatically"])
+groupsettings.add_setting(["theme", "Which <em>theme</em> the window should have. This is literally just inserted right into the window as an additional class. It raises an error if it's not alphanumeric, but there's nothing special about it. It relies on there being CSS code for that class. You can pass in your own theme name, and create CSS for it, and voila that's a new theme. Here's the themes you can chose from at the moment of writing: <em>[softblue, windows7, plain, chromium, gnome3, mac, ubuntu, orangeish]</em>.", "plain"])
 groupsettings.add_setting(["shadow","Whether or not there should be a box shadow around the windows. Some themes look much better with shadow.","false"])
 groupsettings.add_setting(["min_height","The minimum height when resizing, in pixels. The window will refuse to be become smaller when the user resizes.","100"])
-groupsettings.add_setting(["min_width","Same idea as with min_height.","150"])
-groupsettings.add_setting(["fixed_position","Whether or not the window should use fixed positioning. Window #3 on this page has this option set to true.","false"])
+groupsettings.add_setting(["min_width","Same idea as with <em>min_height</em>.","150"])
+groupsettings.add_setting(["fixed_position","Whether or not the window should use fixed positioning. Window <em>#3</em> on this page has this option set to true.","false"])
 
-windowsettings.add_setting(["title","The title of the window. This is completely unescaped. It is put inside a p element.","'This is a title!'"])
+windowsettings.add_setting(["title","The title of the window. This is completely unescaped. It is put inside a <em>p</em> element.","'This is a title!'"])
 windowsettings.add_setting(["content","The stuff that's inside the window. Also completely unescaped.","'This is... content'"])
 windowsettings.add_setting(["resizable","Whether the window should be resizable. If false, the resize thing will simply be removed.","true"])
 windowsettings.add_setting(["close_button","Whether there should be a close button. If false, the close button thing will simply be removed.","true"])
 windowsettings.add_setting(["width","The width of the window in pixels.","250"])
 windowsettings.add_setting(["height","The height of the window (including the top part) in pixels.","400"])
-windowsettings.add_setting(["top","This is the top CSS value of the window. This means different things for absolute positioning and fixed positioning.","0"])
+windowsettings.add_setting(["top","This is the <em>top</em> CSS value of the window. This means different things for absolute positioning and fixed positioning.","0"])
 windowsettings.add_setting(["left","Same deal as with the top setting above.","0"])
 windowsettings.add_setting(["min_height","Same as for group settings, but only for this window.","Same as the respective group settings value"])
 windowsettings.add_setting(["min_width","Same as for group settings, but only for this window.","Same as the respective group settings value"])
