@@ -240,21 +240,20 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         windowSettings[settings.id] = settings;
 
         var window_html = 
-                (" <div class='jswindow {theme} {shadow} {position}'          \n" +
-                 "      id='{id}' style='z-index:{zindex};'>                  \n" +
-                 "   <div class='window-top'>                                 \n" +
-                 "     {close_button}                                         \n" +
-                 "     <p class='window-title'>{title}</p>                    \n" +
-                 "   </div>                                                   \n" +
-                 "                                                            \n" +
-                 "   <div class='window-content-container'>                   \n" +
-                 "     <div class='window-content'>                           \n" +
-                 "       {content}                                            \n" +
-                 "     </div>                                                 \n" +
-                 "   </div>                                                   \n" +
-                 "   {resize_thing}                                           \n" +
-                 " </div>                                                     \n" ).jsWin_format(
-                     {
+                (" <div class='jswindow {theme} {shadow} {position}' \n" +
+                 "      id='{id}' style='z-index:{zindex};'>         \n" +
+                 "   <div class='window-top'>                        \n" +
+                 "     {close_button}                                \n" +
+                 "     <p class='window-title'>{title}</p>           \n" +
+                 "   </div>                                          \n" +
+                 "                                                   \n" +
+                 "   <div class='window-content-container'>          \n" +
+                 "     <div class='window-content'>                  \n" +
+                 "       {content}                                   \n" +
+                 "     </div>                                        \n" +
+                 "   </div>                                          \n" +
+                 "   {resize_thing}                                  \n" +
+                 " </div>                                            \n" ).jsWin_format({
                          id: settings.id,
                          zindex: zindex,
                          close_button: (settings.close_button) ? 

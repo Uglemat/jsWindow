@@ -148,6 +148,159 @@ windowsettings.add_setting(["id","The id of the window. This is the actual id, n
 doc.add groupsettings.get_html()
 doc.add windowsettings.get_html()
 
+doc.add("""
+<h2 id="html_structure">HTML structure</h2>
+
+<p>You can get a lot of information from the DOM inspector of your browser about how jsWindow works, but it is useful to see how the HTML is generated. This is literally how it's done at the time of writing this:</p>
+""")
+doc.add_code_snippet("""
+var window_html = 
+        (" <div class='jswindow {theme} {shadow} {position}' \\n" +
+         "      id='{id}' style='z-index:{zindex};'>         \\n" +
+         "   <div class='window-top'>                        \\n" +
+         "     {close_button}                                \\n" +
+         "     <p class='window-title'>{title}</p>           \\n" +
+         "   </div>                                          \\n" +
+         "                                                   \\n" +
+         "   <div class='window-content-container'>          \\n" +
+         "     <div class='window-content'>                  \\n" +
+         "       {content}                                   \\n" +
+         "     </div>                                        \\n" +
+         "   </div>                                          \\n" +
+         "   {resize_thing}                                  \\n" +
+         " </div>                                            \\n" ).jsWin_format({
+                 id: settings.id,
+                 zindex: zindex,
+                 close_button: (settings.close_button) ? 
+                     "<div class='close-window-button'><b>{X}</b></div>".jsWin_format(
+                         {X:"X"}) : "",
+                 title: settings.title,
+                 resize_thing: (settings.resizable) ?
+                     "<div class='resize-window'>⌟</div>" : "",
+                 content: settings.content,
+                 theme: settings.theme,
+                 shadow: (settings.shadow) ? "shadow" : "",
+                 position: (settings.fixed_position) ? "fixed" : "abs"
+             });
+""",false)
+
+doc.add("""
+<p><em>settings</em> being the window settings described above. You can infer a lot from the code above. One thing that isn't obvious but is the actual case is that <em>settings.content</em> and <em>settings.theme</em> is pasted right in the HTML. <em>settings.id</em> and <em>settings.theme</em> should throw exceptions if they aren't alphanumeric (before the code above is executed), but the content and title will absolutely not so beware of cross-site scripting.</p>
+""")
+
+doc.add("""
+<h2 id="themes">Themes & creating own themes</h2>
+<p>Themes are just CSS, nothing more. The theme setting that you pass in must be alphanumeric but other than that there are no restrictions and the setting value will be added as a class to the jsWindow. You can create your own themes by just adding the CSS you need. But you'll want some information about what CSS already is influencing the window. So here is the <a href="http://www.lesscss.org/">less</a> code which applies to all windows at the time of writing this:</p>
+""")
+doc.add_code_snippet("""
+.jswindow * { 
+    margin: 0;
+    padding: 0;
+}
+.jswindow {
+    background: #FF0000;
+    width: 200px;
+    height: 200px;
+    .window-top {
+        cursor: default;
+        word-wrap: break-word;
+        p.window-title {
+            .no-user-select;
+            text-align: center;
+            padding: 5px 0 5px 0;
+            min-height: 20px;
+        }
+        .close-window-button {
+            display: inline;
+            float: right;
+            padding: 5px 0 5px 0;
+            width: 35px;
+            text-align: center;
+            b { 
+                margin-right: 3px; 
+                color: white; 
+            }
+            &:hover {
+                cursor: pointer;
+            }
+            &:active {
+                b { 
+                    position: relative;
+                    top: 1px;
+                }
+            }
+        }
+    }
+    .window-content-container {
+        min-height: 20px;
+        padding: 5px;
+        height: 40%;
+        overflow: auto;
+        margin: 2px;
+    }
+    .window-content {
+        height: 99%;
+    }
+    .resize-window {
+        .no-user-select;
+        float: right;
+        cursor: move;
+        position: relative;
+        bottom: 21px;
+        right: 0px;
+        padding: 0 3px 0 6px;
+    }
+}""", false)
+
+doc.add("""
+<p>So if you want to make your own themes you'll just build upon that until it looks nice by adding your own new theme name as an additional class to the CSS selector. As an example, here's how the <em>chromium</em> theme is implemented:</p>
+""")
+
+doc.add_code_snippet("""
+.jswindow.chromium {
+    background: #738eb1;
+    border-radius: 5px;
+    border: 1px solid #595959;
+    padding: 1px;
+    .window-top {
+        p.window-title {}
+        .close-window-button {
+            .set_inset_shadow(#9cb0c8, 1px, 1px);
+            margin-top: 3px;
+            margin-right: 3px;
+            height: 5px;
+            width: 22px;
+            border: 1px solid #687e98;
+            border-radius: 2px;
+            b {
+                font-size: 10px;
+                position: relative;
+                top: -8px;
+                left: 1px;
+            }
+            &:hover {
+                .set_inset_shadow(#ccd6e3, 1px, 2px);
+            }
+            &:active {
+                background: #5a718e;
+                .set_inset_shadow(lighten(#ccd6e3, -10%), 1px, 2px);
+            }
+        }
+    }
+    .window-content-container {
+        background: #FFFFFF;
+        border: 1px solid #4b5f79;
+        border-radius: 3px;
+    }
+    .window-content {}
+    .resize-window {}
+}
+""", false)
+
+doc.add("""
+<p>Obviously you don't need to use less, you can just use normal CSS. If you want to look at the other themes, look at the <em>jsWindow_style.less</em> file in the github repo.</p>
+""")
+
 $(document).ready ->
         $("#doc_container").html doc.content
         $("#real_code").html doc.get_real_code()
