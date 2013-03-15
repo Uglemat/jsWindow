@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    var wg = new jsWindow.windowGroup($("#windows"),{ 
+    var wg = new jsWindow.windowGroup($("#windows"),{ id: "mywg",
         shadow: false, transparent_when_moving: true, fixed_position:false,
         keep_windows_on_page: { bottom: true, right: true}});
     wg.appendWindow({title: "My title AYssssAYAY",theme:"gnome3", shadow: true});

@@ -204,6 +204,8 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         for (var i = 0; i < (windows.length); i++) {
             $(".jswindow#"+windows[i]).css("z-index", groupSettings.start_z_index + i);
         }
+        $(".{gid} .jswindow".jsWin_format({gid: groupSettings.id})).removeClass("focused");
+        $("#"+windows[windows.length-1]).addClass("focused");
     };
 
     var buildWindow = function (userSettings, zindex) {
