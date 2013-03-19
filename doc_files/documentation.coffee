@@ -40,8 +40,12 @@ doc.add_code_snippet("""
 """, run_snippet=false)
 
 doc.add("""
-<P>You need the meta charset thing because otherwise the browser might start to whine about characters outside of the ASCII range. You can probably use other versions of jQuery as well, try it out and see. If you're doing something that's more or less important, you should <a href="http://static.smartviking.webfactional.com/jswindow/jsWindow.tar">download jsWindow</a>. This is because I can't guarantee the version on this website to always be backwards compatible, and I cannot guarantee the file to always be hosted here for the eternal future. I've got ambitions to keep hosting them, but you never know.</p>
+<P>You need the meta charset thing because otherwise the browser might start to whine about characters outside of the ASCII range. You can probably use other versions of jQuery as well, try it out and see. If you're doing something that's more or less important, you should <a href="http://static.smartviking.webfactional.com/jswindow/jsWindow.tar">download jsWindow</a>. This is because I can't guarantee the version on this website to always be backwards compatible, and I cannot guarantee the file to always be hosted here for the eternal future. I've got ambitions to keep hosting them, but you never know. If you want to be quick about it, here's a one-liner for downloading jsWindow and placing the files you need into a directory named "jswindow":</p>
 """)
+
+doc.add_code_snippet("""
+$ mkdir jswindow && cd jswindow && wget http://static.smartviking.webfactional.com/jswindow/jsWindow.tar -O - | tar -xf -
+""", run_snippet=false, js=false)
 
 doc.add("""
 <h2 id="links">Links</h2>
