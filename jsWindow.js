@@ -172,6 +172,23 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
         }
     };
 
+    this.get_location = function(win_id) {
+        /* Useful for when you want to place windows in specific locations.
+         * You can just move it around so it's in the right spot, and use the
+         * output from this function as as window settings.
+         */
+        win_id = (typeof win_id === 'undefined') ? windows[windows.length-1] : win_id;
+
+        var win = $('.{0} #{1}'.jsWin_format(groupSettings.id, win_id));
+        return {
+            top: parseInt(win.css('top')),
+            left: parseInt(win.css('left')),
+            width: win.outerWidth(),
+            height: win.outerHeight()
+        };
+    };
+
+
     this.remove_window = function(win_id) {
         if (windows.indexOf(win_id) === -1) {
             console.warn("jsWindow - tried to remove non " +
@@ -394,18 +411,4 @@ jsWindow.windowGroup = function (container, additionalGroupSettings) {
             });
         });  
 
-};
-
-jsWindow.get_location_information = function(win_id) {
-    /* Useful for when you want to place windows in specific locations.
-     * You can just move it around so it's in the right spot, and use the
-     * output from this function as as window settings.
-     */
-    var win = $('#'+win_id);
-    return {
-        top: parseInt(win.css('top')),
-        left: parseInt(win.css('left')),
-        width: win.outerWidth(),
-        height: win.outerHeight()
-    };
 };

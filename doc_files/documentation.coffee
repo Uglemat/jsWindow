@@ -104,7 +104,7 @@ var blue_window_id = windowgroup.appendWindow({
         top:460, left:860, width:400, height:200
 });""")
 
-doc.add("""<p>appendWindow returns the id of the new window. You can use it to remove the window later with <em>windowgroup.remove_window</em> which takes an id as the only parameter. or <em>jsWindow.get_location_information</em> which gets the top, left, width, and height css properties of the window, or <em>windowgroup.set_location</em> which takes a window id, and an object containing location information. You can basically feed the output of <em>get_location_information</em> into <em>set_location</em>, I think.</p>""")
+doc.add("""<p>appendWindow returns the id of the new window. You can use it to remove the window later with <em>windowgroup.remove_window</em> which takes an id as the only parameter. or <em>windowgroup.get_location</em> which gets the top, left, width, and height css properties of the window, or <em>windowgroup.set_location</em> which takes a window id, and an object containing location information. You can basically feed the output of <em>get_location</em> into the second parameter of <em>set_location</em>.</p>""")
 
 class Settings
         constructor: (@conf) ->
