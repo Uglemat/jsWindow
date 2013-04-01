@@ -189,7 +189,7 @@ var window_html =
 """,false)
 
 doc.add("""
-<p><em>settings</em> being the window settings described above. You can infer a lot from the code above. One thing that isn't obvious but is the actual case is that <em>settings.content</em> and <em>settings.theme</em> is pasted right in the HTML. <em>settings.id</em> and <em>settings.theme</em> should throw exceptions if they aren't alphanumeric (before the code above is executed), but the content and title will absolutely not so beware of cross-site scripting.</p>
+<p><em>settings</em> being the window settings described above. You can infer a lot from the code above. One thing that isn't obvious but is the actual case is that <em>settings.content</em> and <em>settings.title</em> is pasted right in the HTML. <em>settings.id</em> and <em>settings.theme</em> should throw exceptions if they aren't alphanumeric (before the code above is executed), but the content and title will absolutely not so beware of cross-site scripting.</p>
 """)
 
 doc.add("""
